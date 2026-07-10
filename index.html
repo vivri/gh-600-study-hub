@@ -50,6 +50,7 @@
   .code-copy { position: absolute; top: .4rem; right: .4rem; opacity: .7; }
   .code-copy:hover { opacity: 1; }
   .file-label { font-family: var(--bs-font-monospace); font-size: .78rem; background: rgba(111,66,193,.12); border-radius: .375rem .375rem 0 0; padding: .25rem .6rem; display: inline-block; margin-bottom: -1px; }
+  pre.mermaid { background: transparent; border: 0; display: flex; justify-content: center; overflow-x: auto; margin: .5rem 0; }
 </style>
 </head>
 <body>
@@ -84,6 +85,7 @@
       <a class="btn btn-light btn-sm" href="#skills">Skills Measured</a>
       <a class="btn btn-light btn-sm" href="#notes">Deep Study Notes</a>
       <a class="btn btn-light btn-sm" href="#configs">Config Cookbook</a>
+      <a class="btn btn-light btn-sm" href="#diagrams">Diagrams</a>
       <a class="btn btn-light btn-sm" href="#flashcards">Flashcards</a>
       <a class="btn btn-light btn-sm" href="#practice">Practice Exam</a>
       <a class="btn btn-outline-light btn-sm" href="#resources">Study Resources</a>
@@ -976,6 +978,117 @@ by adding the `security` label.</code></pre></div>
     </details>
   </section>
 
+  <!-- ============ DIAGRAMS ============ -->
+  <section id="diagrams" class="mb-5">
+    <h2 class="mb-1">🗺️ Concept Diagrams</h2>
+    <p class="text-body-secondary">Five Mermaid diagrams of the core exam concepts, from the <a href="https://github.com/jtur671/gh-600-study-guide/blob/main/diagrams.md" target="_blank" rel="noopener">community repo</a>.</p>
+
+    <div class="card mb-4 searchable-block"><div class="card-body">
+      <h5 class="card-title">1 · Plan → Act → Evaluate lifecycle <span class="badge text-bg-secondary">Domain 1</span></h5>
+      <pre class="mermaid">
+flowchart LR
+    Plan["📋 Plan&lt;br/&gt;(inspectable artifact)"]
+    Act["⚙️ Act&lt;br/&gt;(bounded execution)"]
+    Eval{"✅ Evaluate&lt;br/&gt;(signals gate merge)"}
+    Plan --> Act --> Eval
+    Eval -->|checks fail / unmet| Plan
+    Eval -->|all checks pass| Merge["🔀 Merge / Done"]
+      </pre>
+      <p class="small text-body-secondary mb-0">The loop is the key: evaluation failures don't terminate the agent — they feed back into a new plan. Linear flow is the anti-pattern.</p>
+    </div></div>
+
+    <div class="card mb-4 searchable-block"><div class="card-body">
+      <h5 class="card-title">2 · Risk-tiered autonomy decision tree <span class="badge text-bg-secondary">Domain 6</span></h5>
+      <pre class="mermaid">
+flowchart TD
+    Start["Agent action"]
+    Op{Operational&lt;br/&gt;risk?}
+    Sec{Security&lt;br/&gt;risk?}
+    Comp{Compliance&lt;br/&gt;risk?}
+    Auto["🟢 Fully autonomous&lt;br/&gt;lint · docs · tests"]
+    Gate["🟡 Approval-gated&lt;br/&gt;logic · deps · schema"]
+    Human["🔴 Human-authored&lt;br/&gt;prod deploy · secrets · deletes"]
+    Start --> Op
+    Op -->|No| Sec
+    Op -->|Yes| Human
+    Sec -->|No| Comp
+    Sec -->|Yes| Human
+    Comp -->|No| Auto
+    Comp -->|Yes| Gate
+      </pre>
+      <p class="small text-body-secondary mb-0">Any-yes-routes-up: if <em>any</em> risk dimension trips, escalate. The exam will test this triage order.</p>
+    </div></div>
+
+    <div class="card mb-4 searchable-block"><div class="card-body">
+      <h5 class="card-title">3 · MCP server / registry / allow list interaction <span class="badge text-bg-secondary">Domain 2 ★</span></h5>
+      <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Dev as Developer / Agent
+    participant Reg as MCP Registry
+    participant Pol as Org Allow List
+    participant Srv as MCP Server
+    Dev->>Reg: Discover available servers
+    Reg-->>Dev: Server catalog
+    Dev->>Pol: Request to enable server X
+    alt Server on allow list
+        Pol-->>Dev: ✅ Allowed
+        Dev->>Srv: Invoke tool
+        Srv-->>Dev: Tool result
+    else Not on allow list
+        Pol-->>Dev: ❌ Blocked
+    end
+      </pre>
+      <p class="small text-body-secondary mb-0">The allow list is enforced <em>after</em> registry discovery, <em>before</em> the tool call. Skipping the allow-list check is the most common exam-trap scenario.</p>
+    </div></div>
+
+    <div class="card mb-4 searchable-block"><div class="card-body">
+      <h5 class="card-title">4 · SDLC integration: control plane + system of record <span class="badge text-bg-secondary">Domains 1 + 6</span></h5>
+      <pre class="mermaid">
+flowchart TB
+    subgraph CI["CI/CD Pipeline (GitHub Actions)"]
+        direction TB
+        Trigger["Workflow trigger&lt;br/&gt;(PR · issue · dispatch)"]
+        PlanJob["Plan job&lt;br/&gt;uploads plan artifact"]
+        ActJob["Act job&lt;br/&gt;scoped token · branch"]
+        EvalJob["Eval job&lt;br/&gt;checks · scans"]
+        Trigger --> PlanJob --> ActJob --> EvalJob
+    end
+    subgraph Control["GitHub Control Plane"]
+        BP["Branch protection"]
+        CO["CODEOWNERS"]
+        EP["Environment approval"]
+        RS["Rulesets"]
+    end
+    subgraph Record["GitHub System of Record"]
+        PR["Pull Request"]
+        Runs["Workflow runs + logs"]
+        Art["Artifacts + traces"]
+        Alerts["Security alerts"]
+    end
+    Control -.->|enforces| CI
+    CI -.->|produces| Record
+    Record -.->|audited via| Control
+      </pre>
+      <p class="small text-body-secondary mb-0">The same GitHub primitives both <em>record</em> activity and <em>enforce</em> policy — that's what "system of record AND control plane" means in the audience profile.</p>
+    </div></div>
+
+    <div class="card mb-4 searchable-block"><div class="card-body">
+      <h5 class="card-title">5 · Sub-agent lifecycle (Copilot SDK state machine) <span class="badge text-bg-secondary">Domain 5</span></h5>
+      <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Selected: subagent.selected
+    Selected --> Started: subagent.started
+    Started --> Completed: subagent.completed
+    Started --> Failed: subagent.failed
+    Completed --> Deselected: subagent.deselected
+    Failed --> Deselected: subagent.deselected
+    Deselected --> [*]
+      </pre>
+      <p class="small text-body-secondary mb-0">Five events, three terminal-ish states. <code>toolCallId</code> is the join key across all events for a given sub-agent invocation.</p>
+    </div></div>
+  </section>
+
   <!-- ============ FLASHCARDS ============ -->
   <section id="flashcards" class="mb-5">
     <h2 class="mb-1">🎴 Flashcards</h2>
@@ -1675,10 +1788,24 @@ function setTheme(t) {
   document.documentElement.setAttribute("data-bs-theme", t);
   themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
   localStorage.setItem(LS_THEME, t);
+  document.dispatchEvent(new CustomEvent("gh600-theme", { detail: t }));
 }
 setTheme(localStorage.getItem(LS_THEME) || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 themeBtn.addEventListener("click", () =>
   setTheme(document.documentElement.getAttribute("data-bs-theme") === "dark" ? "light" : "dark"));
+</script>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const blocks = [...document.querySelectorAll("pre.mermaid")];
+blocks.forEach(el => el.dataset.src = el.textContent);
+async function renderDiagrams() {
+  const dark = document.documentElement.getAttribute("data-bs-theme") === "dark";
+  mermaid.initialize({ startOnLoad: false, theme: dark ? "dark" : "default", securityLevel: "loose" });
+  blocks.forEach(el => { el.removeAttribute("data-processed"); el.textContent = el.dataset.src; });
+  try { await mermaid.run({ nodes: blocks }); } catch (e) { console.error("mermaid render:", e); }
+}
+document.addEventListener("gh600-theme", renderDiagrams);
+renderDiagrams();
 </script>
 </body>
 </html>
