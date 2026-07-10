@@ -20,3 +20,11 @@ An interactive, single-file study webpage for **Exam GH-600 — Developing in Ag
 - Flashcards, mock exam, labs, and exam logistics adapted from the community repo [jtur671/gh-600-study-guide](https://github.com/jtur671/gh-600-study-guide) (unofficial)
 
 > ⚠️ Unofficial study aid — not affiliated with or endorsed by GitHub or Microsoft. Verify exam logistics on the official registration page.
+
+## Disclaimer
+
+These materials are provided **as-is** for personal study. The author bears **no responsibility** for their accuracy, completeness, or currency, nor for any exam outcome resulting from their use. Always verify against the official Microsoft Learn and GitHub documentation.
+
+## License
+
+[MIT](LICENSE)
