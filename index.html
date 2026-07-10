@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GH-600 Study Hub — Developing in Agentic AI Systems</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  :root { --accent: #6f42c1; }
+  body { scroll-behavior: smooth; }
+  .hero {
+    background: linear-gradient(135deg, #1a1040 0%, #4c2a85 60%, #6f42c1 100%);
+    color: #fff;
+  }
+  .hero a { color: #d7c8ff; }
+  .badge-weight { font-size: .85rem; }
+  .subtopic-label { cursor: pointer; }
+  .checked-item { text-decoration: line-through; opacity: .6; }
+  .resource-card { transition: transform .15s ease, box-shadow .15s ease; height: 100%; }
+  .resource-card:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); }
+  .key-fact { border-left: 3px solid var(--accent); padding-left: .6rem; margin-bottom: .4rem; font-size: .9rem; }
+  .sticky-progress { position: sticky; top: 0; z-index: 1030; }
+  .domain-progress { height: 6px; }
+  mark { padding: 0 .1em; }
+  .hidden-by-search { display: none !important; }
+  section { scroll-margin-top: 90px; }
+  .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+  .accordion-button:not(.collapsed) { background-color: rgba(111,66,193,.12); color: inherit; }
+  details.study-note { border: 1px solid var(--bs-border-color); border-radius: .5rem; margin-bottom: .75rem; background: var(--bs-body-bg); overflow: hidden; }
+  details.study-note > summary { padding: .7rem 1rem; font-weight: 600; cursor: pointer; list-style: none; }
+  details.study-note > summary::-webkit-details-marker { display: none; }
+  details.study-note > summary::before { content: "▸ "; color: var(--accent); }
+  details.study-note[open] > summary::before { content: "▾ "; }
+  details.study-note[open] > summary { border-bottom: 1px solid var(--bs-border-color); background: rgba(111,66,193,.08); }
+  details.study-note .note-body { padding: 1rem; }
+  .note-body h6 { color: var(--accent); margin-top: 1rem; }
+  .note-body h6:first-child { margin-top: 0; }
+  .note-body table { margin-bottom: .75rem; }
+  .callout { border-left: 4px solid var(--accent); background: rgba(111,66,193,.07); padding: .6rem .9rem; border-radius: 0 .375rem .375rem 0; margin: .75rem 0; }
+  #flashcard { min-height: 210px; cursor: pointer; user-select: none; }
+  #flashcard .fc-face { display: flex; align-items: center; justify-content: center; min-height: 170px; text-align: center; padding: 1rem; }
+  .quiz-opt { cursor: pointer; }
+  .quiz-opt.correct { background: rgba(25,135,84,.15); border-color: #198754 !important; }
+  .quiz-opt.wrong { background: rgba(220,53,69,.15); border-color: #dc3545 !important; }
+  .quiz-opt.disabled { pointer-events: none; opacity: .8; }
+  .mock-q.graded-right { border-left: 4px solid #198754; }
+  .mock-q.graded-wrong { border-left: 4px solid #dc3545; }
+</style>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm sticky-progress">
+  <div class="container-lg">
+    <a class="navbar-brand fw-bold" href="#top">🎓 GH-600 Study Hub</a>
+    <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-end">
+      <span id="overallBadge" class="badge text-bg-secondary d-none d-sm-inline">0% studied</span>
+      <input id="searchBox" class="form-control form-control-sm" style="max-width:230px"
+             type="search" placeholder="Filter topics &amp; resources…" aria-label="Search">
+      <button id="themeToggle" class="btn btn-sm btn-outline-secondary" title="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+</nav>
+<div class="progress rounded-0" style="height:4px">
+  <div id="overallBar" class="progress-bar" style="width:0%; background:var(--accent)"></div>
+</div>
+
+<!-- ============ HERO ============ -->
+<header id="top" class="hero py-5 mb-4">
+  <div class="container-lg">
+    <p class="mb-1 text-uppercase small opacity-75">GitHub Certification · Exam GH-600</p>
+    <h1 class="display-5 fw-bold">Developing in Agentic AI Systems</h1>
+    <p class="lead col-lg-9">
+      Certifies expertise in operating, integrating, supervising, and governing AI agents inside
+      production-grade SDLC workflows — ensuring reliability, safety, and velocity using
+      <strong>GitHub as the system of record and control plane</strong>.
+    </p>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <a class="btn btn-light btn-sm" href="#skills">Skills Measured</a>
+      <a class="btn btn-light btn-sm" href="#notes">Deep Study Notes</a>
+      <a class="btn btn-light btn-sm" href="#flashcards">Flashcards</a>
+      <a class="btn btn-light btn-sm" href="#practice">Practice Exam</a>
+      <a class="btn btn-outline-light btn-sm" href="#resources">Study Resources</a>
+      <a class="btn btn-outline-light btn-sm" href="https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/gh-600" target="_blank" rel="noopener">Official Study Guide ↗</a>
+    </div>
+  </div>
+</header>
+
+<main class="container-lg pb-5">
+
+  <!-- ============ EXAM FACTS ============ -->
+  <section id="facts" class="mb-5">
+    <div class="row g-3">
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">700+</div><div class="small text-body-secondary">score required to pass (of 1000)</div>
+      </div></div></div>
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">6</div><div class="small text-body-secondary">skill domains measured</div>
+      </div></div></div>
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">GA</div><div class="small text-body-secondary">mostly GA features; commonly-used Preview features may appear</div>
+      </div></div></div>
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">1 yr</div><div class="small text-body-secondary">renewal via free online assessment on Microsoft Learn</div>
+      </div></div></div>
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">40–60</div><div class="small text-body-secondary">questions, scenario-led, single best answer unless noted †</div>
+      </div></div></div>
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">120 min</div><div class="small text-body-secondary">+30 min available if not testing in your first language †</div>
+      </div></div></div>
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">Beta</div><div class="small text-body-secondary">through May 31, 2026 · GA July 2026 · beta scored in 8–12 weeks †</div>
+      </div></div></div>
+      <div class="col-6 col-md-3"><div class="card text-center h-100"><div class="card-body">
+        <div class="fs-3 fw-bold">D2</div><div class="small text-body-secondary">tool use &amp; MCP is the heaviest domain (20–25%) — budget study time proportionally</div>
+      </div></div></div>
+    </div>
+    <div class="small text-body-secondary mt-2">† Community-sourced logistics from the unofficial <a href="https://github.com/jtur671/gh-600-study-guide" target="_blank" rel="noopener">gh-600-study-guide</a> repo — verify on the official registration page before booking. The repo also notes the beta is unavailable in some regions (Turkey, Pakistan, India, China).</div>
+    <div class="alert alert-light border mt-3 small mb-0">
+      <strong>Audience:</strong> you operate agent workflows inside the SDLC, supervise autonomous behavior
+      with GitHub controls, evaluate and tune agent outputs using scans and artifacts, configure custom
+      agents, and coordinate multi-agent execution safely. Expected background: SDLC, GitHub workflows &amp;
+      controls, code quality/security/review practices, coding agents (GitHub Copilot), MCP servers, and
+      agent customization (custom instructions, custom agents, tools, Copilot setup steps).
+      Try the <a href="https://aka.ms/examdemo" target="_blank" rel="noopener">exam sandbox</a> to explore the exam environment.
+    </div>
+  </section>
+
+  <!-- ============ SKILLS MEASURED ============ -->
+  <section id="skills" class="mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-2 gap-2">
+      <h2 class="mb-0">📋 Skills Measured</h2>
+      <div class="small text-body-secondary">Check off subtopics as you master them — progress is saved in your browser.
+        <button id="resetProgress" class="btn btn-link btn-sm p-0 align-baseline">reset</button>
+      </div>
+    </div>
+    <div id="domainAccordion" class="accordion"></div>
+  </section>
+
+  <!-- ============ DEEP STUDY NOTES ============ -->
+  <section id="notes" class="mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-2 gap-2">
+      <h2 class="mb-0">🧠 Deep Study Notes</h2>
+      <div>
+        <button class="btn btn-sm btn-outline-secondary" id="expandNotes">Expand all</button>
+        <button class="btn btn-sm btn-outline-secondary" id="collapseNotes">Collapse all</button>
+      </div>
+    </div>
+    <p class="text-body-secondary">Distilled from every content unit of the three Microsoft Learn training modules. Study these here — click each unit title to open its source for the full text and diagrams.</p>
+
+    <!-- ===== MODULE 1 ===== -->
+    <h4 class="mt-4 mb-3">1️⃣ Foundations of Agentic AI in GitHub</h4>
+
+    <details class="study-note searchable-block">
+      <summary>Define agentic AI in the SDLC <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/foundations-agentic-ai/2-define-agentic-ai" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <h6>Assistant vs. agent — the core distinction</h6>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>Assistant (reactive)</th><th>Agent (goal-driven)</th></tr></thead>
+          <tbody>
+            <tr><td>Responds to a prompt, returns control to the user</td><td>Interprets a goal and decides intermediate steps</td></tr>
+            <tr><td>Suggests code, explains output, summarizes changes</td><td>Uses tools: GitHub API, CI workflows, repository write operations</td></tr>
+            <tr><td>Takes no repository actions — the user applies each step manually</td><td>Produces <strong>durable artifacts</strong>: branches, commits, pull requests</td></tr>
+            <tr><td>Doesn't independently move work forward</td><td>Iterates based on feedback: checks, reviews, scans</td></tr>
+          </tbody>
+        </table>
+        <h6>The "is it an agent?" checklist</h6>
+        <ul>
+          <li>Maintains a goal across multiple steps</li>
+          <li>Decides intermediate actions on its own</li>
+          <li>Uses tools</li>
+          <li>Creates or modifies durable artifacts (branch / commits / PR)</li>
+          <li>Iterates based on feedback signals</li>
+        </ul>
+        <h6>How agent behavior appears in GitHub</h6>
+        <ul>
+          <li><strong>Branches &amp; commits</strong> — what changed</li>
+          <li><strong>Pull requests</strong> — what is proposed, why, and for review</li>
+          <li><strong>Workflows &amp; checks</strong> — what evidence exists</li>
+          <li><strong>Review comments &amp; approvals</strong> — what humans accepted or rejected</li>
+        </ul>
+        <div class="callout">The agent does not replace the workflow — it <strong>enters the workflow as a participant</strong>. Typical flow: security alert → create branch (e.g. <code>agent/bump-dep-2026-04-03</code>) → update dependency + lockfile → open PR with summary and plan → wait for CI and review, revise as needed.</div>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>The agent lifecycle: plan → act → evaluate <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/foundations-agentic-ai/3-explain-agent-lifecycle-plan-act-evaluate" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <div class="callout">It's a <strong>loop, not a linear sequence</strong>: agents repeatedly plan, act, and evaluate until the task meets defined success criteria — or the work is handed off to a human.</div>
+        <h6>Plan</h6>
+        <ul>
+          <li>The agent interprets the goal and determines steps. In high-quality systems plans are <strong>structured, reviewable artifacts</strong> — not hidden internal state</li>
+          <li>Planning artifacts in GitHub: a structured plan in the PR description; a linked issue or checklist outlining scope and success criteria</li>
+          <li>A reviewable plan includes: <strong>scope</strong> (what will change), <strong>success criteria</strong> (how you'll know it worked), and a <strong>rollback or escalation path</strong></li>
+        </ul>
+        <h6>Act</h6>
+        <ul>
+          <li>Execute in the repo: create a branch, change files and push commits, open/update a PR, respond to review feedback</li>
+          <li>Execution stays <strong>bounded</strong>: a specific repository, a branch, PR workflows — never uncontrolled direct changes to the default branch</li>
+        </ul>
+        <h6>Evaluate</h6>
+        <ul>
+          <li>Evaluation signals: workflow runs and status checks (build/test/lint), code review feedback, security signals (code scanning incl. SARIF uploads, secret scanning alerts, push protection, dependency alerts)</li>
+          <li>Rulesets / branch protection can require checks to pass before merge — turning evaluation into an <strong>enforceable gate</strong>, not an informal suggestion</li>
+          <li><strong>Exam-critical principle:</strong> evaluation must be grounded in <em>system signals</em>, not in the agent's confidence</li>
+        </ul>
+        <h6>Quality bar — every phase visible</h6>
+        <ul>
+          <li>The plan is <strong>inspectable</strong> · the action is <strong>bounded</strong> to repository workflows · the evaluation uses <strong>objective signals</strong>. When any piece is missing, trust degrades</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>GitHub as system of record and control plane <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/foundations-agentic-ai/4-describe-github-system-record-control-plane" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <h6>System of record — the artifacts</h6>
+        <ul>
+          <li>Repositories and branches · commits and pull requests · issues and discussions (<em>context &amp; intent</em>) · workflow runs and artifacts (<em>evidence</em>) · review history (<em>decisions</em>)</li>
+          <li>These artifacts do double duty: they support development AND make agent behavior inspectable after the fact</li>
+        </ul>
+        <h6>Control plane — the enforcement points (memorize this table)</h6>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>GitHub control</th><th>What it enforces</th><th>Why it matters for agents</th></tr></thead>
+          <tbody>
+            <tr><td>Pull requests</td><td>Changes are proposed before merging</td><td>Makes agent work reviewable and discussable</td></tr>
+            <tr><td>Required reviews</td><td>Human approval gate</td><td>Prevents unreviewed merges; supports accountability</td></tr>
+            <tr><td>Required status checks</td><td>CI evidence before merging</td><td>Converts evaluation into enforceable policy</td></tr>
+            <tr><td>CODEOWNERS</td><td>Review routing by path</td><td>Right experts supervise high-impact changes</td></tr>
+            <tr><td>Rulesets / branch protection</td><td>Centralized branch policy</td><td>Prevents unsafe merges; consistent guardrails</td></tr>
+            <tr><td>Environments</td><td>Approvals for deployments / secrets</td><td>Controls sensitive execution and secret access</td></tr>
+          </tbody>
+        </table>
+        <h6>GitHub Actions belongs in the control plane</h6>
+        <ul>
+          <li>Least privilege: default workflow token permissions conservative (read-only where possible); grant higher permissions only to jobs that need them; environments + approvals for sensitive secrets/deployments</li>
+        </ul>
+        <div class="callout">"What the agent can do" often reduces to <strong>"what the workflow token and tool credentials can do."</strong> Also remember: enforcement depends on configuration and admin permissions — the supervision model works everywhere, but enforcement requires the controls to be turned on.</div>
+        <h6>Practical examples</h6>
+        <ul>
+          <li>Humans may need to explicitly "Approve and run workflows" on agent PRs — a built-in guardrail against privileged workflows running on untrusted changes</li>
+          <li>A job targeting an environment with required reviewers <strong>waits</strong> until approval is granted</li>
+          <li>CODEOWNERS on sensitive paths (<code>.github/workflows/</code>, <code>infra/</code>) auto-requests the owning team's review</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>Responsibilities, risks, anti-patterns, and traceability <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/foundations-agentic-ai/5-identify-risks-traceability" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <div class="callout"><strong>Responsibility does not move with execution.</strong> Agents participate, but the accountable parties remain the people who defined the task, set permissions, chose/configured controls, and approved the change. The system can propose; humans decide what is accepted.</div>
+        <h6>The four common anti-patterns (know these cold)</h6>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>Risk / anti-pattern</th><th>What it looks like</th><th>Mitigation with GitHub controls</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Planless execution</strong></td><td>PR has a diff but no plan or rationale</td><td>Require a plan section via PR template; require review before merge</td></tr>
+            <tr><td><strong>Over-permissioned agents</strong></td><td>Workflows can write broadly, access secrets broadly</td><td>Least-privilege GITHUB_TOKEN; environments with required reviewers; restrict who can trigger workflows</td></tr>
+            <tr><td><strong>Hidden reasoning</strong></td><td>Only the diff is visible — no assumptions, scope, or decision trail</td><td>Require a plan; link workflow runs; record decisions in PR comments</td></tr>
+            <tr><td><strong>Blind trust in automation</strong></td><td>"CI passed, ship it" — checks only validate what they're designed to detect</td><td>Combine checks with CODEOWNERS, required reviews, risk-based approvals</td></tr>
+          </tbody>
+        </table>
+        <h6>Traceability trail in GitHub</h6>
+        <ul>
+          <li>PRs and commit history · review comments and approvals · workflow runs and uploaded artifacts (test reports, logs) · code scanning uploads/alerts · secret scanning alerts and push protection events · organization audit log events</li>
+        </ul>
+        <h6>Minimum audit trail for an agent contribution</h6>
+        <ol>
+          <li>A stated <strong>goal</strong> (issue link or PR description)</li>
+          <li>An inspectable <strong>plan</strong> (PR plan section or file)</li>
+          <li>A bounded <strong>changeset</strong> (branch and commits)</li>
+          <li>Automated <strong>evidence</strong> (workflow run and artifacts)</li>
+          <li>Human <strong>judgment</strong> (review and approval)</li>
+          <li>A clear <strong>outcome</strong> (merge, revert, or escalation)</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>The contributor model for agent-generated work <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/foundations-agentic-ai/6-apply-contributor-model-agent-generated-work" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <div class="callout">Treat agent output as a <strong>contribution</strong>, not as categorically different. This avoids two opposite errors: <strong>excessive suspicion</strong> (rejecting work because "AI wrote it") and <strong>excessive trust</strong> (accepting work because automation produced it). Evaluate work by the standards of the workflow, not the novelty of the author.</div>
+        <h6>Review rubric for agent PRs</h6>
+        <ul>
+          <li><strong>Intent</strong> — clear goal and visible plan?</li>
+          <li><strong>Scope</strong> — files changed aligned with the plan?</li>
+          <li><strong>Evidence</strong> — required checks pass? logs/artifacts available?</li>
+          <li><strong>Ownership</strong> — CODEOWNERS reviewed sensitive areas?</li>
+          <li><strong>Policy</strong> — complies with rulesets / branch rules / environments?</li>
+          <li><strong>Fallback</strong> — rollback or escalation clear for high-risk changes?</li>
+        </ul>
+        <h6>What a good agent contribution looks like</h6>
+        <ul>
+          <li><strong>Understandable</strong> (clear goal and plan) · <strong>Bounded</strong> (scoped changeset, least privilege) · <strong>Reviewable</strong> (right owners, evidence present) · <strong>Policy-compliant</strong> · <strong>Reconstructable</strong> (audit trail supports post-hoc analysis)</li>
+        </ul>
+      </div>
+    </details>
+
+    <!-- ===== MODULE 2 ===== -->
+    <h4 class="mt-5 mb-3">2️⃣ Designing Agent Architecture and SDLC Integration</h4>
+
+    <details class="study-note searchable-block">
+      <summary>Map agent responsibilities to the SDLC <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/design-agent-architecture-integration/2-agent-responsibilities" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <ul>
+          <li>Don't treat an agent like a general-purpose developer roaming the whole SDLC — map it to specific stages where GitHub can enforce boundaries</li>
+          <li>Most teams start by scoping agents to <strong>implementation and validation</strong>, where PRs and workflows provide natural control points</li>
+        </ul>
+        <h6>SDLC stage → GitHub surface mapping</h6>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>SDLC stage</th><th>Typical agent responsibility</th><th>Primary artifact</th></tr></thead>
+          <tbody>
+            <tr><td>Planning</td><td>Draft scope, plan steps, define success criteria</td><td>Issues, PR descriptions/comments, Agents tab</td></tr>
+            <tr><td>Implementation</td><td>Create branch, make changes, open/update PR</td><td>Branch, commits, pull request</td></tr>
+            <tr><td>Validation</td><td>Run checks, attach artifacts, iterate on failures</td><td>Workflow runs, checks, artifacts</td></tr>
+            <tr><td>Deployment</td><td><strong>Usually restricted</strong>; approvals for sensitive actions</td><td>Environments and deployment approvals</td></tr>
+          </tbody>
+        </table>
+        <h6>Architectural boundaries</h6>
+        <ul>
+          <li>Scope early to reduce <strong>blast radius</strong>: limit which directories an agent can modify by policy and ownership</li>
+          <li>Treat workflow and infra changes as <strong>higher risk</strong> than application code</li>
+          <li>Prefer PR-based work even for automation — avoid direct-to-default-branch changes</li>
+        </ul>
+        <div class="callout">The canonical design boundary: <strong>"agents propose; humans and policy accept."</strong> A remediation agent's scoped job ends when the PR (with plan + expected success signals) is open — validation and acceptance happen through checks, reviews, and policy.</div>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>Inputs, outputs, and success criteria (task contracts) <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/design-agent-architecture-integration/3-inputs-outputs-success-criteria" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <h6>The task contract</h6>
+        <ul>
+          <li><strong>Inputs</strong> — what the agent needs: issue context, constraints, boundaries</li>
+          <li><strong>Outputs</strong> — what the agent produces: plan + PR + evidence</li>
+          <li><strong>Success criteria</strong> — how results are evaluated: checks, scans, review outcomes</li>
+        </ul>
+        <div class="callout">Under-specified tasks produce changes that <em>look plausible</em> but don't solve the underlying problem — e.g., a dependency update that leaves the vulnerable version reachable transitively.</div>
+        <h6>Example: vulnerability-remediation contract</h6>
+        <ul>
+          <li><strong>Inputs:</strong> security alert/issue link; repo scope (changes allowed under <code>src/</code> and dependency files, NOT <code>infra/</code>); constraints (no workflow changes without platform review, no secrets introduced, no direct-to-main pushes)</li>
+          <li><strong>Outputs:</strong> PR with structured plan, bounded changeset on an agent branch, links to workflow-run evidence</li>
+          <li><strong>Success criteria:</strong> required checks pass; the security signal is actually resolved; scope matches intent (no unexpected files); rollback/escalation path recorded for higher-risk changes</li>
+        </ul>
+        <h6>Key exam principle</h6>
+        <ul>
+          <li><strong>"CI passed" is necessary but not sufficient.</strong> Success criteria must reflect real intent — "vulnerability resolved," not just "tests passed"</li>
+          <li>Enforce success as a system guarantee: make the validation workflow (tests + CodeQL analysis) a <strong>required status check</strong> via rulesets/branch protection so the PR cannot merge until it passes</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>Separate planning, reasoning, and execution <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/design-agent-architecture-integration/4-plan-reason-execution" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <ul>
+          <li><strong>Planning</strong> = what will be done and why · <strong>Execution</strong> = concrete repo changes · <strong>Validation</strong> = evidence the outcome meets criteria</li>
+          <li>When mixed together, reviewers see only the final diff — losing early intent validation, quick misunderstanding detection, and scope control before impact</li>
+        </ul>
+        <h6>Option A: Plan-first pull request</h6>
+        <ul>
+          <li>Agent opens a PR containing <strong>only the plan</strong> (no code); reviewers discuss/refine/approve; agent then implements in follow-up commits or a new PR</li>
+          <li>Human validation happens <strong>before any code is written</strong> — minimizes early exposure</li>
+          <li>Use for: high-risk or hard-to-reverse changes (workflows, infra, auth, production); when alignment on intent is critical</li>
+        </ul>
+        <h6>Option B: Plan + execution in one PR</h6>
+        <ul>
+          <li>PR includes both structured plan (description) and initial commits; validation still required <strong>before merge</strong></li>
+          <li>Risk is introduced earlier (during proposal), increasing reviewer effort — but GitHub enforcement still prevents unsafe merges</li>
+          <li>Use for: low/medium-risk, easily reversible changes where speed matters</li>
+        </ul>
+        <h6>Enforcing the boundary (4 mechanisms)</h6>
+        <ol>
+          <li><strong>Capability boundary</strong> — planning agents get read-only tools so they can't modify files</li>
+          <li><strong>Explicit handoff</strong> — execution only after plan approval, via deliberate transition to an implementation agent</li>
+          <li><strong>Tool gating in orchestrators</strong> — planning runs without tool execution; tools enabled only after plan acceptance</li>
+          <li><strong>"Plan mode" workflows</strong> — generate a plan artifact and pause before changes</li>
+        </ol>
+        <div class="callout"><strong>Exam-critical:</strong> "instructions not to edit" are <em>guidance</em>; tool allowlists and gates are <em>enforcement</em>. The design choice isn't whether work is reviewed (it always is) — it's <em>when</em> code generation is allowed relative to human validation.</div>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>PR governance: templates, checks, CODEOWNERS, rules, environment gates <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/design-agent-architecture-integration/5-pull-request-governance-controls" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <div class="callout">Pull requests aren't just collaboration tools — <strong>they are enforcement mechanisms</strong> and the primary control point for agent execution.</div>
+        <h6>The safe workflow chain</h6>
+        <p>Agent creates branch → opens PR (includes plan) → required reviews validate approach → Actions run required checks → all checks pass + approvals complete → PR can merge</p>
+        <h6>Control 1 — PR template requiring a structured plan</h6>
+        <ul>
+          <li><code>.github/pull_request_template.md</code> with required sections: Goal, Scope (paths/files), Steps, verifiable Success criteria, Risks + mitigations, Rollback/escalation plan, Evidence (workflow runs, scan results), Review checklist</li>
+        </ul>
+        <h6>Control 2 — "Plan Gate" required status check</h6>
+        <ul>
+          <li>A workflow job fails if the plan artifact is missing; an admin marks it as a <strong>required status check</strong> in rulesets/branch protection — turning "include a plan" from a process expectation into a <strong>system guarantee</strong></li>
+        </ul>
+        <h6>Control 3 — CODEOWNERS routing</h6>
+        <ul>
+          <li>Example: <code>/security/ @security-team</code> · <code>/.github/workflows/ @platform-team</code> · <code>/infra/ @platform-team</code> · <code>* @core-team</code></li>
+          <li>Combined with required review policies, high-risk paths can't merge without the right experts</li>
+        </ul>
+        <div class="callout">If an agent can bypass required checks or merge without reviews, that's <strong>a workflow design failure</strong>, not a model problem.</div>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>Reliable workflows: autonomy levels, outputs, contexts, triggers <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/design-agent-architecture-integration/6-reliable-workflows" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <h6>Risk-based autonomy model (memorize)</h6>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>Task type</th><th>Example paths</th><th>Autonomy design</th></tr></thead>
+          <tbody>
+            <tr><td>Low</td><td><code>docs/</code>, formatting</td><td>Auto-merge after required checks (and reviews if configured) pass</td></tr>
+            <tr><td>Medium</td><td><code>src/</code>, dependency bumps</td><td>PR required + checks + at least one review</td></tr>
+            <tr><td>High</td><td><code>infra/</code>, <code>.github/workflows/</code></td><td>CODEOWNERS + multiple reviews + stricter rulesets</td></tr>
+            <tr><td>Critical</td><td>Production deploys, secrets</td><td>Environment approvals — <strong>agent prepares but can't execute</strong></td></tr>
+          </tbody>
+        </table>
+        <h6>Outputs are workflow contracts</h6>
+        <ul>
+          <li><strong>Step outputs</strong> (<code>echo "plan=..." &gt;&gt; "$GITHUB_OUTPUT"</code>) pass values between steps in the same job</li>
+          <li><strong>Job outputs</strong> + <code>needs:</code> pass values across jobs (<code>${{ needs.plan.outputs.plan }}</code>)</li>
+          <li><strong>env vars</strong> configure runtime behavior — don't use them as a substitute for structured outputs</li>
+        </ul>
+        <h6>Context selection</h6>
+        <ul>
+          <li><code>github.*</code> → event metadata and runtime decisions ("what triggered this run?")</li>
+          <li><code>vars.*</code> → centrally managed, reusable configuration</li>
+          <li><code>env.*</code> → job-level environment variables / runtime configuration</li>
+        </ul>
+        <h6>Safe triggering and defensive gating</h6>
+        <ul>
+          <li>A "PR-only" workflow may still be triggered by <code>push</code>, <code>workflow_dispatch</code>, or <code>schedule</code> — add a job-level condition: <code>if: github.event_name == 'pull_request'</code></li>
+          <li>Environment approvals: a job with <code>environment: production</code> pauses until required reviewers approve — the agent can prepare, not execute</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>Operate agents: observability, tools, MCP, secrets, hooks, reliability <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/design-agent-architecture-integration/7-agent-operations-controls" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <h6>Minimum observability set (every agent task should produce)</h6>
+        <ul>
+          <li>A structured plan (PR description/discussion) · bounded PR + commit history · workflow-run links for required checks · uploaded durable artifacts (logs/reports) · review outcomes</li>
+          <li>Evidence must be traceable to a <strong>specific workflow run and specific commit</strong> ("which run produced this artifact, against what code state?")</li>
+          <li>Share evidence across jobs with <code>upload-artifact</code>/<code>download-artifact</code>; link runs in an "Evidence" section of the PR</li>
+        </ul>
+        <h6>Agent profile = three boundaries</h6>
+        <ul>
+          <li><strong>Capability</strong> — which tools are allowed (prefer allowlists)</li>
+          <li><strong>Visibility</strong> — whether the agent is user-selectable in interactive UI</li>
+          <li><strong>Delegation</strong> — which subagents can be invoked and how handoffs occur</li>
+        </ul>
+        <ul>
+          <li>Read-only toolsets for planning/review agents; implementation tools restricted to execution agents; <strong>changes to tool allowlists are governance-sensitive</strong></li>
+        </ul>
+        <h6>MCP and secrets hygiene</h6>
+        <ul>
+          <li>MCP servers can be remote endpoints or local processes; auth tokens injected at runtime via protected secret boundaries; prefer narrow tool subsets over wildcards</li>
+          <li><strong>Adding/expanding MCP tools increases blast radius — review like a high-risk dependency</strong></li>
+          <li>Never put secrets in instruction files, committed config, or plain workflow YAML; scope secret availability by environment</li>
+          <li>The agent's runtime has its own secret boundary — it does <strong>not</strong> automatically inherit repository CI secrets</li>
+        </ul>
+        <h6>Hooks (.github/hooks/) — enforcement independent of model reasoning</h6>
+        <ul>
+          <li><strong>Pre-action hooks</strong> validate or block unsafe actions before execution (e.g., pre-tool-use blocking a delete command)</li>
+          <li><strong>Post-action hooks</strong> log tool usage/outputs/decisions for auditing</li>
+          <li><strong>Error hooks</strong> capture failures and trigger escalation or alerting</li>
+          <li>Unlike instructions, hooks are <strong>always applied</strong> during execution</li>
+        </ul>
+        <h6>Reliability patterns</h6>
+        <ul>
+          <li><strong>Bounded retries</strong>: agent may revise the branch and rerun after a failed check</li>
+          <li><strong>Escalation policy</strong>: if the same required check fails twice, escalate to a human with what failed, what was attempted, what evidence exists, and the suggested next step (prevents infinite loops)</li>
+          <li><strong>Rollback-safe</strong>: deploy from explicit refs (commit/tag), not "latest on a branch"</li>
+          <li><strong>Least privilege</strong>: e.g. <code>permissions: contents: read, pull-requests: write</code> — read content, comment on PRs, nothing more</li>
+        </ul>
+      </div>
+    </details>
+
+    <!-- ===== MODULE 3 ===== -->
+    <h4 class="mt-5 mb-3">3️⃣ Tooling, MCP, and Agent Execution Environments</h4>
+
+    <details class="study-note searchable-block">
+      <summary>How agents interact with GitHub APIs and workflows <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/agent-tooling-mcp-execution-environments/2-interact-github-apis-workflows" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <ul>
+          <li>Agents work <strong>through</strong> the platform, not around it: APIs to read state and act (create branches/commits, open/update PRs, trigger workflows), Actions workflows as controlled runners</li>
+          <li>All API requests are authenticated — PATs, GitHub App tokens, or the workflow <code>GITHUB_TOKEN</code> — so every action is <strong>permission-controlled and auditable</strong></li>
+          <li>Agents follow the same change sequence as developers: select base branch → create working branch → modify files → commit → open PR</li>
+          <li>Copilot cloud agent operates in a <strong>GitHub Actions-powered environment</strong></li>
+        </ul>
+        <h6>Traditional vs. agentic workflows ("Continuous AI")</h6>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>Traditional Actions workflow</th><th>GitHub Agentic Workflow</th></tr></thead>
+          <tbody>
+            <tr><td>Deterministic, YAML-defined; every step/trigger/condition explicit</td><td><strong>Markdown describes the outcome</strong>; the agent decides how to achieve it within constraints</td></tr>
+            <tr><td>—</td><td><strong>Frontmatter defines the boundaries</strong>: triggers, permissions, tools, safe-outputs</td></tr>
+            <tr><td>Runs as authored</td><td>Compiled into a <strong>lock file</strong> that GitHub Actions executes</td></tr>
+          </tbody>
+        </table>
+        <ul>
+          <li>Best for open-ended-but-bounded tasks: triage, reporting, documentation maintenance, CI failure analysis, code improvement. They <strong>extend</strong> CI/CD pipelines, not replace them</li>
+        </ul>
+        <h6>Agent sessions are observable</h6>
+        <ul>
+          <li>Monitor progress via session log, see actions taken, provide feedback mid-run, review the final PR</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>MCP servers, registries, and allow lists <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/agent-tooling-mcp-execution-environments/3-model-context-protocol-servers-registries-allow-lists" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <h6>The three-piece governance model (memorize)</h6>
+        <ul>
+          <li><strong>MCP server</strong> exposes tools · <strong>Registry</strong> makes servers discoverable and trustable · <strong>Allow list</strong> decides which servers are permitted</li>
+        </ul>
+        <h6>Local vs. remote servers</h6>
+        <ul>
+          <li><strong>Remote</strong> (hosted, accessed over network) — recommended for most users; less setup; e.g. GitHub MCP server at <code>https://api.githubcopilot.com/mcp/</code></li>
+          <li><strong>Local</strong> (your machine, e.g. <code>http://localhost:3000</code>) — tighter config control, access to local resources, typically no external auth</li>
+          <li><strong>GitHub Enterprise Server: local only. Enterprise Cloud with data residency: both local and remote</strong></li>
+          <li>Add in VS Code: Copilot Chat → Agent mode → Tools icon → Configure tools → Add MCP server → type HTTP → URL → scope (workspace/all) → Authenticate → save</li>
+        </ul>
+        <h6>Custom MCP registries — requirements</h6>
+        <ul>
+          <li>Must follow the <strong>MCP registry v0.1 spec</strong> and expose: <code>GET /v0.1/servers</code>, <code>GET /v0.1/servers/{name}/versions/latest</code>, <code>GET /v0.1/servers/{name}/versions/{version}</code></li>
+          <li>Must include CORS headers (Allow-Origin *, GET/OPTIONS, Authorization/Content-Type)</li>
+          <li>Options: fork/self-host the open-source MCP Registry, run it locally in Docker, build your own, or use <strong>Azure API Center</strong> as a managed registry (enable anonymous access; enter the <strong>base URL only</strong>, without <code>/v0.1/servers</code>)</li>
+        </ul>
+        <h6>Allow lists — configuration facts</h6>
+        <ul>
+          <li>Enforced at <strong>org or enterprise level</strong>, tied to the Copilot seat that governs the user</li>
+          <li>Enterprise path: enterprise page → <strong>AI controls → MCP</strong>; Org path: Settings → <strong>Copilot → Policies</strong></li>
+          <li>Policy options: <strong>Allow all</strong> (any server, no restrictions) vs <strong>Registry only</strong> (only servers in the configured registry)</li>
+          <li><strong>Registry-only gotcha:</strong> even local MCP servers must be listed in the registry, and server IDs must match exactly. Policy applies immediately to all developers</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>Execution context and boundaries <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/agent-tooling-mcp-execution-environments/4-execution-context-boundaries" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <div class="callout"><strong>Execution context = repository + branch + workflow + permissions.</strong> It determines both visibility and capability.</div>
+        <h6>Repository scope</h6>
+        <ul>
+          <li>Agents operate only within their repository; no access to others unless explicitly granted</li>
+          <li>Configure per-repo: Settings → Code &amp; automation → <strong>Copilot → Cloud agent</strong> → enable</li>
+        </ul>
+        <h6>Custom agent scope (within the repo)</h6>
+        <ul>
+          <li>Files live at <code>.github/agents/*.agent.md</code> (e.g. <code>security-reviewer.agent.md</code>)</li>
+          <li><code>applyTo</code> limits which files/directories the agent focuses on (globs like <code>src/auth/**</code>); <code>tools</code> defines allowed actions (e.g. <code>read_file</code>, <code>search_files</code>)</li>
+          <li><strong>Custom agents control</strong>: file focus, allowed tools, behavior instructions. <strong>They do NOT control</strong>: branch creation, PR behavior, execution isolation — those are enforced by the execution context/system</li>
+        </ul>
+        <h6>Branch-based isolation</h6>
+        <ul>
+          <li>Agents never work directly on main: new branch from the selected base branch → changes → PR to base. You can pick a non-default base branch from the Agents page</li>
+        </ul>
+        <h6>Workflow &amp; permission boundaries</h6>
+        <ul>
+          <li>Workflows are controlled execution containers: clean environment, repeatable, logged</li>
+          <li>Invoke an agent in CI: workflow file with explicit triggers (<code>workflow_dispatch</code>, <code>schedule</code>, events), minimal <code>permissions:</code>, a defined runner, <code>COPILOT_GITHUB_TOKEN</code>, then <code>npx @github/copilot-cli -p "…" --no-ask-user</code> (add <code>--agent security-reviewer</code> for a custom agent)</li>
+          <li><code>GITHUB_TOKEN</code> permissions gate reading contents, writing code, creating PRs, secrets access, triggering workflows — always explicit and minimized</li>
+        </ul>
+        <h6>Agentic Workflow guardrails (defense in depth)</h6>
+        <ul>
+          <li><strong>Read-only tokens by default</strong> · <strong>safe outputs</strong> (agent proposes, a separate gated step decides what's applied) · <strong>zero secrets in the agent process</strong> · sandboxed containerized execution · network isolation with allowlisted outbound access · threat detection scanning proposed outputs before any write</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="study-note searchable-block">
+      <summary>Agent execution limits and protections <a class="small fw-normal ms-2" href="https://learn.microsoft.com/en-us/training/modules/agent-tooling-mcp-execution-environments/5-agent-execution-limits-protections" target="_blank" rel="noopener">source ↗</a></summary>
+      <div class="note-body small">
+        <h6>Platform limits on the cloud agent</h6>
+        <ul>
+          <li>Access limited to the repository where it works; changes on a <strong>separate branch</strong>, never directly on the default branch</li>
+          <li>The agent <strong>prepares</strong> changes — the human decides whether to create the PR, review, request updates, or discard. It doesn't finalize on its own</li>
+          <li>Repo/org settings control which workflows are allowed, what actions can run, and what <code>GITHUB_TOKEN</code> may do</li>
+        </ul>
+        <h6>The five safe-execution patterns (Domain 2 exam objectives)</h6>
+        <table class="table table-sm table-bordered">
+          <thead><tr><th>Pattern</th><th>Implementation</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Error handling</strong></td><td>Fail fast (<code>continue-on-error: false</code>), meaningful error logs, prevent partial/inconsistent changes</td></tr>
+            <tr><td><strong>Retries</strong></td><td>Rerun failed steps; retry loops with sleep for transient failures (network etc.)</td></tr>
+            <tr><td><strong>Rollbacks</strong></td><td>Naturally supported by branch isolation + PR review; also close/discard the PR, or revert commits if merged</td></tr>
+            <tr><td><strong>Escalation</strong></td><td>Required PR review, auto-assigned reviewers, workflow steps notifying maintainers — critical decisions stay human</td></tr>
+            <tr><td><strong>Traceability</strong></td><td>Workflow logs, commit history, PR discussions; clear commit messages; changes scoped to a branch</td></tr>
+          </tbody>
+        </table>
+        <h6>Environment protections &amp; loop prevention</h6>
+        <ul>
+          <li>Environments can require approvals, restrict secrets, and control deployment targets before agent-driven jobs continue</li>
+          <li><strong>Loop-prevention fact:</strong> actions performed with <code>GITHUB_TOKEN</code> generally do NOT trigger additional workflow runs; GitHub App tokens and PATs CAN — design carefully to avoid recursive automation loops</li>
+          <li>Sessions stay visible while running: monitor logs, inspect actions, send follow-up prompts</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ FLASHCARDS ============ -->
+  <section id="flashcards" class="mb-5">
+    <h2 class="mb-1">🎴 Flashcards</h2>
+    <p class="text-body-secondary">67 cards — one per skill bullet in the official outline. Click the card (or press <kbd>Space</kbd>) to flip, <kbd>←</kbd>/<kbd>→</kbd> to navigate. From the <a href="https://github.com/jtur671/gh-600-study-guide" target="_blank" rel="noopener">community study-guide repo</a>, also available there as an <a href="https://github.com/jtur671/gh-600-study-guide/raw/main/media/gh-600.apkg" target="_blank" rel="noopener">Anki deck</a>.</p>
+    <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+      <div class="btn-group btn-group-sm" role="group" id="fcDomainFilter"></div>
+      <button class="btn btn-sm btn-outline-secondary" id="fcShuffle">🔀 Shuffle</button>
+      <span class="badge text-bg-secondary" id="fcCounter"></span>
+    </div>
+    <div class="card shadow-sm" id="flashcard" tabindex="0" aria-label="Flashcard — click to flip">
+      <div class="card-body">
+        <div class="d-flex justify-content-between small text-body-secondary">
+          <span id="fcDomainTag"></span><span id="fcSide">QUESTION — click to reveal</span>
+        </div>
+        <div class="fc-face fs-5" id="fcText"></div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-3">
+      <button class="btn btn-outline-secondary" id="fcPrev">← Previous</button>
+      <button class="btn btn-primary" style="background:var(--accent);border-color:var(--accent)" id="fcFlip">Flip</button>
+      <button class="btn btn-outline-secondary" id="fcNext">Next →</button>
+    </div>
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section id="practice" class="mb-5">
+    <h2 class="mb-1">📝 Practice</h2>
+    <p class="text-body-secondary">Questions constructed from the published skills outline (not real exam items — those are under NDA; avoid "braindump" sellers). Sourced from the <a href="https://github.com/jtur671/gh-600-study-guide" target="_blank" rel="noopener">community repo</a>.</p>
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#quizTab" type="button">⚡ Quick Quiz (15 · instant feedback)</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#mockTab" type="button">🎓 Mock Exam (41 · graded)</button></li>
+    </ul>
+    <div class="tab-content border border-top-0 rounded-bottom p-3">
+
+      <div class="tab-pane fade show active" id="quizTab">
+        <div id="quizBody"></div>
+      </div>
+
+      <div class="tab-pane fade" id="mockTab">
+        <div class="alert alert-light border small">
+          Weighted to the official domain percentages. Suggested pace: <strong>90 minutes</strong> (the real exam gives 120). Passing target: <strong>29/41 ≈ 70%</strong>.
+          <span id="mockBest" class="ms-2"></span>
+        </div>
+        <div class="d-flex gap-2 mb-3">
+          <button class="btn btn-sm btn-outline-secondary" id="mockTimerBtn">▶ Start timer</button>
+          <span class="badge text-bg-secondary align-self-center" id="mockTimer">00:00</span>
+          <button class="btn btn-sm btn-success ms-auto" id="mockGrade">Grade exam</button>
+          <button class="btn btn-sm btn-outline-danger" id="mockReset">Reset</button>
+        </div>
+        <div id="mockBody"></div>
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-success" id="mockGrade2">Grade exam</button>
+        </div>
+        <div id="mockResult" class="mt-3"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ LABS & STUDY PLAN ============ -->
+  <section id="labs" class="mb-5">
+    <h2 class="mb-1">🧪 Hands-on Labs &amp; 4-Week Plan</h2>
+    <p class="text-body-secondary">Practical exercises and a study sequence from the <a href="https://github.com/jtur671/gh-600-study-guide/blob/main/lab-guide.md" target="_blank" rel="noopener">community lab guide</a> — the exam is scenario-led, so hands-on time pays off.</p>
+    <div class="row g-3">
+      <div class="col-lg-6">
+        <div class="card h-100"><div class="card-body">
+          <h5 class="card-title">Labs (~2¼ hours total)</h5>
+          <ol class="small mb-0" start="0">
+            <li><strong>Sandbox setup</strong> (5 min) — throwaway repo to break things in</li>
+            <li><strong>Repo-level custom instructions</strong> for Copilot (15 min)</li>
+            <li><strong>Configure an MCP server</strong> for your agent (30 min) — Domain 2 core</li>
+            <li><strong>Custom Copilot agent in a workflow</strong> (30 min) — Domain 2 core</li>
+            <li><strong>PR governance</strong> for agent-authored work (20 min)</li>
+            <li><strong>Copilot cloud agent firewall</strong> (15 min)</li>
+            <li><strong>Environment protection</strong> for irreversible actions (15 min)</li>
+          </ol>
+        </div></div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card h-100"><div class="card-body">
+          <h5 class="card-title">Suggested 4-week sequence</h5>
+          <ul class="small mb-0">
+            <li><strong>Week 1 — Foundations &amp; vocabulary:</strong> Foundations module + official study guide until "system of record and control plane" is reflexive; Domain 1 flashcards</li>
+            <li><strong>Week 2 — Tool use &amp; MCP (the 20–25% domain):</strong> Tooling module; MCP labs (server, allow list, firewall); Domain 2 flashcards</li>
+            <li><strong>Week 3 — Architecture &amp; governance:</strong> Design module; custom-agent + branch-protection labs; Domain 1 + 6 flashcards</li>
+            <li><strong>Week 4 — Gap closure &amp; mock exam:</strong> Domains 3–5 have no dedicated module — read Copilot memory (D3), implementation-planner (D4), custom-agents SDK (D5) docs; sit the mock exam timed, re-read the source doc for every miss</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STUDY RESOURCES ============ -->
+  <section id="resources" class="mb-5">
+    <h2 class="mb-1">📚 Study Resources — Succinct Summaries</h2>
+    <p class="text-body-secondary">Every resource from the official study guide, distilled. Click a card title to open the source.</p>
+
+    <h4 class="mt-4 mb-3">🧑‍🏫 Microsoft Learn Training Modules</h4>
+    <div id="trainingCards" class="row g-3"></div>
+
+    <h4 class="mt-5 mb-3">📖 GitHub Documentation (one per exam domain)</h4>
+    <div id="docsCards" class="row g-3"></div>
+  </section>
+
+  <!-- ============ COMMUNITY ============ -->
+  <section id="community" class="mb-5">
+    <h2 class="mb-3">🌐 Community &amp; More</h2>
+    <div class="list-group">
+      <a class="list-group-item list-group-item-action" href="https://github.com/jtur671/gh-600-study-guide" target="_blank" rel="noopener">⭐ <strong>gh-600-study-guide (community repo)</strong> — flashcards, mock exam, labs, Mermaid diagrams, and Anki decks (unofficial; source of the Flashcards &amp; Practice sections above)</a>
+      <a class="list-group-item list-group-item-action" href="https://www.youtube.com/playlist?list=PLxgUmxsBhjMhyjJhNM9dxSCdJj2yExS2Y" target="_blank" rel="noopener">🎬 <strong>PromptLab GH-600 video series</strong> — free 7-video walkthrough, one per exam domain plus a 20-minute audio overview</a>
+      <a class="list-group-item list-group-item-action" href="https://developer.microsoft.com/en-us/reactor/events/27225/" target="_blank" rel="noopener">🛰️ <strong>Microsoft Reactor deep-dive session</strong> — GH-600 exam deep dive (May 28, 2026 recording)</a>
+      <a class="list-group-item list-group-item-action" href="https://techcommunity.microsoft.com/blog/skills-hub-blog/new-github-certified-agentic-ai-developer/4517571" target="_blank" rel="noopener">📣 <strong>Announcement blog</strong> — "New GitHub Certified: Agentic AI Developer" on Microsoft Tech Community</a>
+      <a class="list-group-item list-group-item-action" href="https://github.community/" target="_blank" rel="noopener">💬 <strong>GitHub Community Discussions</strong> — ask questions and learn from other candidates</a>
+      <a class="list-group-item list-group-item-action" href="https://github.blog/" target="_blank" rel="noopener">📰 <strong>GitHub Blog</strong> — product announcements and deep dives (watch for Copilot &amp; agents posts)</a>
+      <a class="list-group-item list-group-item-action" href="https://www.youtube.com/github" target="_blank" rel="noopener">▶️ <strong>GitHub on YouTube</strong> — videos, demos, and GitHub Universe sessions</a>
+      <a class="list-group-item list-group-item-action" href="https://learn.microsoft.com/en-us/credentials/certifications/exam-scoring-reports" target="_blank" rel="noopener">🧮 <strong>Exam scoring &amp; score reports</strong> — how the 700-point pass mark works</a>
+      <a class="list-group-item list-group-item-action" href="https://learn.microsoft.com/en-us/credentials/certifications/request-accommodations" target="_blank" rel="noopener">♿ <strong>Request accommodations</strong> — extra time, assistive devices, or modified experience</a>
+    </div>
+  </section>
+</main>
+
+<footer class="py-4 bg-body-tertiary border-top">
+  <div class="container-lg small text-body-secondary d-flex flex-wrap justify-content-between gap-2">
+    <span>Unofficial study companion for Exam GH-600 · summaries sourced from the
+      <a href="https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/gh-600" target="_blank" rel="noopener">official study guide</a> (updated 2026)</span>
+    <span>Built with plain HTML/CSS/JS + Bootstrap 5</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ================= DATA ================= */
+const DOMAINS = [
+  {
+    title: "Prepare agent architecture and SDLC processes", weight: "15–20%",
+    groups: [
+      { name: "Integrate agents into the SDLC", items: [
+        "Identify steps for agents to perform",
+        "Identify and mitigate common anti-patterns in agents",
+        "Define inputs, outputs, and success criteria for agents" ]},
+      { name: "Define boundaries between planning, reasoning, and action", items: [
+        "Configure agent planning to be distinct from agent execution",
+        "Configure an agent to output a structured plan",
+        "Validate agent plans",
+        "Prevent agent action until the plan is checked and approved" ]},
+      { name: "Configure observability and control for autonomous agents", items: [
+        "Plan and implement the degree of agent autonomy, including guardrails",
+        "Configure agents to produce inspectable artifacts within standard dev tooling",
+        "Configure human intervention for autonomous agents without slowing delivery" ]}
+    ]
+  },
+  {
+    title: "Implement tool use and environment interaction", weight: "20–25%",
+    groups: [
+      { name: "Select and configure agent tools", items: [
+        "Identify required tools", "Configure agent tools", "Configure agent tool permissions" ]},
+      { name: "Configure MCP servers", items: [
+        "Add an MCP server as a tool to an agent",
+        "Configure a GitHub remote MCP server",
+        "Configure the MCP registries",
+        "Configure MCP allow lists" ]},
+      { name: "Integrate agents within development environments", items: [
+        "Evaluate the execution context for an agent",
+        "Configure an agent's scope to a specific repository",
+        "Configure an agent to be invoked in a CI workflow",
+        "Configure an agent to use branch-based scope",
+        "Enable autonomous actions: creating branches and pull requests",
+        "Handle environment-specific constraints" ]},
+      { name: "Operate agents with safe execution paths and robust error handling", items: [
+        "Implement error handling", "Implement retries", "Implement rollbacks",
+        "Implement escalation paths", "Implement traceability and accountability for agent actions" ]}
+    ]
+  },
+  {
+    title: "Manage memory, state, and execution", weight: "10–15%",
+    groups: [
+      { name: "Implement agent memory strategies", items: [
+        "Choose between short-term, long-term, and external memory",
+        "Scope agent memory to task-relevant information",
+        "Define memory expiration, pruning, and reset rules" ]},
+      { name: "Persist agent state and manage context drift", items: [
+        "Capture task progress and decisions as durable artifacts",
+        "Resume agent work without repeating steps or diverging from prior decisions",
+        "Detect and correct drift during extended agent execution" ]},
+      { name: "Ensure continuity of memory and state across tools and environments", items: [
+        "Share agent state", "Prevent conflicting context", "Prevent stale context" ]}
+    ]
+  },
+  {
+    title: "Perform evaluation, error analysis, and tuning", weight: "15–20%",
+    groups: [
+      { name: "Define success criteria and evaluation signals for agent tasks", items: [
+        "Specify expected outcomes and operational constraints",
+        "Identify qualitative and quantitative evaluation signals",
+        "Align evaluation criteria with development intent",
+        "Generate evaluation signals using automated scanning tools" ]},
+      { name: "Analyze agent failures and identify root causes", items: [
+        "Identify failures using logs, plans, traces, outputs, and workflow artifacts",
+        "Classify root causes: reasoning errors, tool misuse, context/environment issues" ]},
+      { name: "Tune agent behavior based on evaluation results", items: [
+        "Revise instructions, workflows, or constraints",
+        "Refine memory usage", "Refine tool usage and tool access" ]}
+    ]
+  },
+  {
+    title: "Orchestrate multi-agent coordination", weight: "15–20%",
+    groups: [
+      { name: "Operate and manage multi-agent workflows", items: [
+        "Apply an orchestration pattern to coordinate multiple agents",
+        "Configure agent isolation for parallel execution",
+        "Detect and resolve conflicts: overlapping changes, duplicated effort, contradictory outputs" ]},
+      { name: "Configure observability for multi-agent behavior", items: [
+        "Produce artifacts suitable for review and audit",
+        "Document key decisions, handoffs, and outcomes across agents",
+        "Perform post-hoc analysis of multi-agent behavior" ]},
+      { name: "Detect and respond to multi-agent failures and degraded behavior", items: [
+        "Identify failed, partial, or stalled agent executions",
+        "Respond to degraded behavior or coordination across agents",
+        "Implement recovery patterns: rollback and human-in-the-loop" ]},
+      { name: "Manage the lifecycle of agents within multi-agent workflows", items: [
+        "Add agents to existing multi-agent workflows",
+        "Update, reconfigure, or replace agents without disrupting active workflows",
+        "Retire agents while preserving auditability and workflow continuity" ]}
+    ]
+  },
+  {
+    title: "Implement guardrails and accountability", weight: "10–15%",
+    groups: [
+      { name: "Define autonomy levels", items: [
+        "Classify agent actions by operational, security, and compliance risk",
+        "Assign autonomy levels balancing delivery speed with security and Responsible AI standards" ]},
+      { name: "Implement guardrails and human-in-the-loop workflows", items: [
+        "Identify the subset of actions that require human judgment",
+        "Block actions that violate security, compliance, or Responsible AI policies",
+        "Scope permissions and execution contexts to enforce least privilege",
+        "Require explicit authorization for irreversible or compliance-sensitive changes",
+        "Preserve velocity by minimizing approvals that don't materially reduce risk" ]}
+    ]
+  }
+];
+
+const TRAINING = [
+  {
+    title: "Foundations of Agentic AI in GitHub",
+    url: "https://learn.microsoft.com/en-us/training/modules/foundations-agentic-ai/",
+    meta: "8 units · Intermediate",
+    summary: "The conceptual bedrock: what makes an agent different from an assistant, and why GitHub is the control plane.",
+    facts: [
+      "Agents vs. assistants: agents plan, act, and improve autonomously — the developer's role shifts to guiding, reviewing, and validating",
+      "Core lifecycle: plan → act → evaluate",
+      "GitHub = system of record AND control plane for agent activity (branches, PRs, checks, rulesets)",
+      "Know the responsibilities, risks, anti-patterns, and traceability requirements of agent systems",
+      "The contributor model: evaluate agent-generated work the same way you evaluate human contributions (reviews, CODEOWNERS, branch protection)"
+    ]
+  },
+  {
+    title: "Designing Agent Architecture and SDLC Integration",
+    url: "https://learn.microsoft.com/en-us/training/modules/design-agent-architecture-integration/",
+    meta: "9 units · Intermediate",
+    summary: "How to structure agent tasks and govern them through pull requests, checks, and workflow design.",
+    facts: [
+      "Map agent responsibilities to SDLC stages and define architectural boundaries",
+      "Define structured tasks: explicit inputs, outputs, and success criteria",
+      "Separate planning, reasoning, and execution for inspectable, reliable workflows",
+      "PR-based governance: templates, required checks, CODEOWNERS, rulesets, environment gates",
+      "Reliable Actions workflows: outputs, contexts, triggers, cross-job handoffs",
+      "Two control layers: PR governance decides what changes are accepted; environment controls (e.g., the cloud agent firewall) decide what the agent can access at runtime"
+    ]
+  },
+  {
+    title: "Tooling, MCP, and Agent Execution Environments",
+    url: "https://learn.microsoft.com/en-us/training/modules/agent-tooling-mcp-execution-environments/",
+    meta: "7 units · Intermediate",
+    summary: "How agents act on the world: tools, APIs, MCP, and the boundaries that keep execution safe.",
+    facts: [
+      "Agents use tools and GitHub APIs/workflows to perform actions",
+      "MCP servers extend agent capabilities; governed via MCP registries and allow lists",
+      "Execution environments: GitHub Actions and GitHub Agentic workflows",
+      "Execution boundaries: repository scope, branch scope, workflow scope",
+      "Protections: branch restrictions, pull request review, environment safeguards"
+    ]
+  }
+];
+
+const DOCS = [
+  {
+    domain: "Domain 1 · Architecture & SDLC",
+    title: "Prepare your organization for custom agents",
+    url: "https://docs.github.com/copilot/how-tos/administer-copilot/manage-for-organization/prepare-for-custom-agents",
+    summary: "Setting up a repository to host organization-level Copilot custom agents.",
+    facts: [
+      "Org-level custom agents live in the /agents directory of a .github or .github-private repository",
+      "Private visibility is recommended — members can use agents without direct repo access",
+      "Agents are available to ALL organization members regardless of repository access",
+      "Create from GitHub's custom agents template; document creation guidelines and compliance rules in the README",
+      "Custom agents are in public preview; check enterprise-level restrictions first"
+    ]
+  },
+  {
+    domain: "Domains 2 & 5 · Tools & Multi-agent",
+    title: "Custom agents & sub-agent orchestration (Copilot SDK)",
+    url: "https://docs.github.com/copilot/how-tos/copilot-sdk/use-copilot-sdk/custom-agents",
+    summary: "Defining specialized agents with scoped tools and letting the runtime delegate to them as sub-agents.",
+    facts: [
+      "Custom agent = name + prompt (system instruction); optional: displayName, description, tools, mcpServers, infer, skills",
+      "tools omitted/null → agent gets ALL session tools; an explicit list enforces least privilege",
+      "Inference: runtime auto-selects an agent from its name/description; set infer:false for high-risk agents",
+      "Sub-agents run in an isolated context and stream lifecycle events: subagent.selected / started / completed / failed / deselected",
+      "defaultAgent.excludedTools hides tools from the main agent to force delegation",
+      "Best practice: pair read-only researcher agents with write-capable editor agents; always handle subagent.failed"
+    ]
+  },
+  {
+    domain: "Domain 3 · Memory & State",
+    title: "GitHub Copilot Memory",
+    url: "https://docs.github.com/copilot/concepts/agents/copilot-memory",
+    summary: "How Copilot learns and retains repository facts and personal preferences across tools.",
+    facts: [
+      "Two memory types: repository-level facts (conventions, architecture, build commands — shared) and user-level preferences (personal, follow you across repos)",
+      "Cross-tool: memory captured by one tool (cloud agent, code review, CLI) can be applied by others",
+      "Repository facts are validated against current branch code before use; unused entries auto-delete after 28 days",
+      "Code review uses repository facts only, never user preferences; CLI applies memory only for the initiating user",
+      "Memories include citations; users delete their own preferences, repo owners delete repo facts, Business/Enterprise admins can bulk export/delete"
+    ]
+  },
+  {
+    domain: "Domain 4 · Evaluation & Tuning",
+    title: "Implementation planner custom agent (tutorial)",
+    url: "https://docs.github.com/copilot/tutorials/customization-library/custom-agents/implementation-planner",
+    summary: "A worked example of a custom agent that turns requirements into structured, reviewable plans.",
+    facts: [
+      "Agent file is named implementation-planner.agent.md and committed to the default branch",
+      "Standard plan structure: Overview (problem + success criteria) → Technical Approach → Implementation Plan (phases + dependencies) → Considerations (assumptions/constraints/risks) → Not Included",
+      "Decomposes requirements into tasks, designs architecture/data models, flags risks",
+      "Created via the Copilot agents tab: pick repo + branch → create custom agent → paste profile → commit",
+      "Structured plans are themselves evaluation artifacts — align them with development intent"
+    ]
+  },
+  {
+    domain: "Domain 6 · Guardrails",
+    title: "Build guardrails for Copilot cloud agent",
+    url: "https://docs.github.com/copilot/tutorials/cloud-agent/build-guardrails",
+    summary: "Preparing an enterprise environment before enabling the cloud agent.",
+    facts: [
+      "Plan policies first: which repos get the agent, which MCP servers are configured",
+      "Content exclusions, custom models, and private MCP registry policies do NOT apply to the cloud agent",
+      "The agent respects branch rulesets exactly like a human developer — verify rulesets neither block it nor under-protect",
+      "Protect Copilot and MCP configuration files with CODEOWNERS",
+      "Keep sensitive data in Actions variables/secrets (agent can't read them); prefer GitHub-hosted or ephemeral self-hosted runners",
+      "Review GITHUB_TOKEN default permissions; developers can override permissions in workflow files — push least privilege"
+    ]
+  },
+  {
+    domain: "Domain 6 · Guardrails",
+    title: "Copilot cloud agent: risks and mitigations",
+    url: "https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations",
+    summary: "The six risk categories of an autonomous coding agent and GitHub's built-in mitigations.",
+    facts: [
+      "Unvalidated code → CodeQL scanning, dependency checks vs. GitHub Advisory Database, secret scanning (no advanced license needed)",
+      "Unauthorized pushes → only write-access users can trigger; pushes limited to designated branches; the agent cannot approve or merge PRs; the requesting user can't approve their own agent PR",
+      "Data leakage → the agent's internet access is restricted (firewall)",
+      "Prompt injection → GitHub filters hidden characters from issues/comments before processing",
+      "Auditability → commits co-authored with the initiating developer, cryptographically signed, linked to session logs; audit events available",
+      "Uncontrolled automation → attribution to the automation creator, tool restrictions, untrusted user events ignored by default, workflows still need human approval"
+    ]
+  }
+];
+
+/* ================= STATE ================= */
+const LS_PROGRESS = "gh600-progress";
+const LS_THEME = "gh600-theme";
+let progress = JSON.parse(localStorage.getItem(LS_PROGRESS) || "{}");
+
+/* ================= RENDER: DOMAINS ================= */
+const acc = document.getElementById("domainAccordion");
+DOMAINS.forEach((d, di) => {
+  const total = d.groups.reduce((n, g) => n + g.items.length, 0);
+  const groupsHtml = d.groups.map((g, gi) => `
+    <h6 class="mt-3 mb-2">${g.name}</h6>
+    <ul class="list-unstyled ms-1 mb-0">
+      ${g.items.map((it, ii) => {
+        const key = `d${di}g${gi}i${ii}`;
+        return `<li class="form-check searchable">
+          <input class="form-check-input topic-check" type="checkbox" id="${key}" data-key="${key}" data-domain="${di}">
+          <label class="form-check-label subtopic-label" for="${key}">${it}</label>
+        </li>`;
+      }).join("")}
+    </ul>`).join("");
+
+  acc.insertAdjacentHTML("beforeend", `
+    <div class="accordion-item searchable-block">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dom${di}">
+          <span class="me-auto searchable">${d.title}</span>
+          <span class="badge text-bg-primary badge-weight me-2" style="background:var(--accent)!important">${d.weight}</span>
+          <span class="badge text-bg-secondary me-3" id="domBadge${di}">0/${total}</span>
+        </button>
+      </h2>
+      <div id="dom${di}" class="accordion-collapse collapse" data-bs-parent="#domainAccordion">
+        <div class="accordion-body pt-2">
+          <div class="progress domain-progress mb-2">
+            <div class="progress-bar" id="domBar${di}" style="width:0%; background:var(--accent)"></div>
+          </div>
+          ${groupsHtml}
+        </div>
+      </div>
+    </div>`);
+});
+
+/* ================= RENDER: RESOURCE CARDS ================= */
+function card(r, badge) {
+  return `<div class="col-md-6 col-xl-4 searchable-block">
+    <div class="card resource-card">
+      <div class="card-body">
+        ${badge ? `<span class="badge text-bg-light border mb-2">${badge}</span>` : ""}
+        <h5 class="card-title"><a class="link-body-emphasis searchable" href="${r.url}" target="_blank" rel="noopener">${r.title} ↗</a></h5>
+        ${r.meta ? `<div class="small text-body-secondary mb-2">${r.meta}</div>` : ""}
+        <p class="card-text small searchable">${r.summary}</p>
+        <div class="small">
+          ${r.facts.map(f => `<div class="key-fact searchable">${f}</div>`).join("")}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+document.getElementById("trainingCards").innerHTML = TRAINING.map(r => card(r, "Training module")).join("");
+document.getElementById("docsCards").innerHTML = DOCS.map(r => card(r, r.domain)).join("");
+
+/* ================= PROGRESS ================= */
+const checks = [...document.querySelectorAll(".topic-check")];
+function refreshProgress() {
+  const done = checks.filter(c => c.checked).length;
+  const pct = checks.length ? Math.round(done / checks.length * 100) : 0;
+  document.getElementById("overallBar").style.width = pct + "%";
+  const badge = document.getElementById("overallBadge");
+  badge.textContent = pct + "% studied";
+  badge.className = "badge d-none d-sm-inline " + (pct === 100 ? "text-bg-success" : "text-bg-secondary");
+  DOMAINS.forEach((d, di) => {
+    const dChecks = checks.filter(c => c.dataset.domain == di);
+    const dDone = dChecks.filter(c => c.checked).length;
+    document.getElementById(`domBadge${di}`).textContent = `${dDone}/${dChecks.length}`;
+    document.getElementById(`domBadge${di}`).className =
+      "badge me-3 " + (dDone === dChecks.length ? "text-bg-success" : "text-bg-secondary");
+    document.getElementById(`domBar${di}`).style.width =
+      (dChecks.length ? dDone / dChecks.length * 100 : 0) + "%";
+  });
+}
+checks.forEach(c => {
+  if (progress[c.dataset.key]) c.checked = true;
+  c.closest("li").querySelector("label").classList.toggle("checked-item", c.checked);
+  c.addEventListener("change", () => {
+    progress[c.dataset.key] = c.checked;
+    localStorage.setItem(LS_PROGRESS, JSON.stringify(progress));
+    c.closest("li").querySelector("label").classList.toggle("checked-item", c.checked);
+    refreshProgress();
+  });
+});
+document.getElementById("resetProgress").addEventListener("click", () => {
+  if (!confirm("Clear all study progress?")) return;
+  progress = {};
+  localStorage.removeItem(LS_PROGRESS);
+  checks.forEach(c => { c.checked = false; c.closest("li").querySelector("label").classList.remove("checked-item"); });
+  refreshProgress();
+});
+refreshProgress();
+
+/* ================= SEARCH FILTER ================= */
+document.getElementById("searchBox").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll(".searchable-block").forEach(block => {
+    const text = block.textContent.toLowerCase();
+    block.classList.toggle("hidden-by-search", q !== "" && !text.includes(q));
+  });
+  // auto-expand accordions and study notes while searching
+  if (q !== "") {
+    document.querySelectorAll("#domainAccordion .accordion-collapse").forEach(el => {
+      const block = el.closest(".searchable-block");
+      if (!block.classList.contains("hidden-by-search")) el.classList.add("show");
+    });
+    document.querySelectorAll("details.study-note:not(.hidden-by-search)").forEach(d => d.open = true);
+  } else {
+    document.querySelectorAll("#domainAccordion .accordion-collapse").forEach(el => el.classList.remove("show"));
+    document.querySelectorAll("details.study-note").forEach(d => d.open = false);
+  }
+});
+
+/* ================= NOTES EXPAND/COLLAPSE ================= */
+document.getElementById("expandNotes").addEventListener("click", () =>
+  document.querySelectorAll("details.study-note").forEach(d => d.open = true));
+document.getElementById("collapseNotes").addEventListener("click", () =>
+  document.querySelectorAll("details.study-note").forEach(d => d.open = false));
+
+/* ================= COMMUNITY REPO DATA (flashcards / quiz / mock exam) ================= */
+const REPO = {"cards": [{"n": 1, "d": 1, "q": "What is the conceptual lifecycle every agent task should follow?", "a": "<code>plan → act → evaluate<\/code>. The plan is inspectable, the act is bounded by tools/permissions, and the evaluate step gates the merge."}, {"n": 2, "d": 1, "q": "Name three common agent anti-patterns to mitigate.", "a": "(1) Acting before producing a structured plan; (2) granting blanket repo-wide write access instead of branch-scoped; (3) running without producing inspectable artifacts (PRs, run logs, traces)."}, {"n": 3, "d": 1, "q": "What three things must be defined for <em>every<\/em> agent task?", "a": "Inputs (what the agent receives), outputs (what artifacts it must produce — usually a PR), and success criteria (the checks that must pass for the work to be accepted)."}, {"n": 4, "d": 1, "q": "Why configure planning as a distinct phase from execution?", "a": "A separately produced plan is <em>inspectable<\/em>: a human or another agent can review and approve it before any irreversible action runs. This is the basis of human-in-the-loop without bottlenecking."}, {"n": 5, "d": 1, "q": "What does a &quot;structured plan&quot; output from an agent look like in practice?", "a": "Machine-parseable artifact (markdown checklist, JSON, or a PR description) listing intended steps, files to touch, tools to invoke, and rollback steps — committed as a draft PR, issue comment, or workflow artifact <em>before<\/em> execution begins."}, {"n": 6, "d": 1, "q": "How do you prevent an agent from acting until its plan is approved?", "a": "Gate execution on an external signal — a required reviewer&#x27;s approval, a &quot;planner&quot; job that uploads the plan as an artifact, then a manually-triggered <code>workflow_dispatch<\/code> or environment approval to start the &quot;act&quot; job."}, {"n": 7, "d": 1, "q": "What are the standard &quot;inspectable artifacts&quot; an agent should produce in GitHub?", "a": "Pull requests, run logs, workflow artifacts (uploaded via <code>actions/upload-artifact<\/code>), check-run outputs, issue comments, and security alerts (code scanning, secret scanning, Dependabot)."}, {"n": 8, "d": 1, "q": "How do you raise an agent&#x27;s autonomy level without losing safety?", "a": "Restrict the <em>blast radius<\/em> (branch scope, allow-listed tools, least-privilege token) rather than restricting the agent&#x27;s actions case-by-case. Then required checks and CODEOWNERS act as the safety net."}, {"n": 9, "d": 1, "q": "How do you add human intervention <em>without<\/em> slowing delivery?", "a": "Require approval only for irreversible or compliance-sensitive actions (production deploys, external API calls, dependency bumps). Use <a href=\"https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment\" target=\"_blank\" rel=\"noopener\">environment protection rules<\/a> to scope approvals; let routine PRs flow."}, {"n": 10, "d": 2, "q": "Where do you declare what tools a Copilot custom agent can use?", "a": "In the agent&#x27;s manifest / configuration — tools are listed explicitly, with permissions (read/write/execute) per tool. The agent cannot invoke tools not on its list."}, {"n": 11, "d": 2, "q": "What&#x27;s the principle behind agent tool permissions?", "a": "<strong>Least privilege per tool, scoped per task.<\/strong> Each tool gets the narrowest permission needed; the agent&#x27;s overall token gets the union, not the maximum."}, {"n": 12, "d": 2, "q": "What does an MCP (Model Context Protocol) server do for an agent?", "a": "Exposes external tools, APIs, or data sources to the agent through a standardized protocol, so the agent can invoke them without bespoke integration code per tool."}, {"n": 13, "d": 2, "q": "How do you add an MCP server as a tool to a Copilot agent?", "a": "Register the server in the agent&#x27;s MCP configuration (local config file or organization-level setting), declare which of the server&#x27;s tools the agent may use, and ensure the server appears in the org/enterprise <strong>MCP registry<\/strong>."}, {"n": 14, "d": 2, "q": "What is the GitHub <strong>remote MCP server<\/strong> for?", "a": "A hosted MCP server that exposes GitHub&#x27;s own APIs (issues, PRs, code search, etc.) as MCP tools — letting Copilot custom agents act on the GitHub platform itself without per-action API plumbing."}, {"n": 15, "d": 2, "q": "What does an <strong>MCP allow list<\/strong> do?", "a": "Restricts which MCP servers an agent (or organization&#x27;s agents) may connect to. Any server not on the allow list is blocked — the primary defense against supply-chain attacks via untrusted MCP servers."}, {"n": 16, "d": 2, "q": "Where do MCP registries fit in?", "a": "They&#x27;re the curated catalog of approved MCP servers for the org/enterprise. Agents discover available servers through the registry; admins control the registry to enforce the allow list centrally."}, {"n": 17, "d": 2, "q": "How do you scope a Copilot custom agent to a single repository?", "a": "Define the agent in that repo&#x27;s <code>.github/<\/code> directory (custom instructions / agent config) so it isn&#x27;t visible at org scope, and/or limit the token used by the agent&#x27;s workflow to that single repo."}, {"n": 18, "d": 2, "q": "How do you invoke an agent inside a CI workflow?", "a": "Trigger a GitHub Actions workflow on the relevant event (<code>pull_request<\/code>, <code>issue_comment<\/code>, <code>workflow_dispatch<\/code>); a step in that workflow runs the agent (e.g., via Copilot setup steps or a custom action), with the workflow&#x27;s <code>GITHUB_TOKEN<\/code> providing scoped access."}, {"n": 19, "d": 2, "q": "What does &quot;branch-based scope&quot; mean for an agent?", "a": "The agent can only read/write a specific branch (often a feature branch it creates), enforced by token permissions and branch protection rules on protected branches."}, {"n": 20, "d": 2, "q": "What lets an agent autonomously create branches and PRs?", "a": "A token with <code>contents: write<\/code> and <code>pull-requests: write<\/code> permissions (either a fine-grained PAT, a GitHub App installation token, or a properly scoped <code>GITHUB_TOKEN<\/code>), plus workflow code that invokes the REST/GraphQL endpoints or <code>gh pr create<\/code>."}, {"n": 21, "d": 2, "q": "How does an agent handle environment-specific constraints (network egress, secrets)?", "a": "<strong>Copilot cloud agent firewall<\/strong> controls outbound network access; <strong>environment secrets and protection rules<\/strong> gate access to credentials per environment (dev/staging/prod); the agent must operate within those constraints rather than around them."}, {"n": 22, "d": 2, "q": "Where does error handling live in an agent workflow?", "a": "At every boundary: tool-call failure handlers in the agent loop, <code>continue-on-error<\/code> / step-level <code>if: failure()<\/code> in the GitHub Actions wrapping job, and a finalizer step that always uploads logs and posts a comment."}, {"n": 23, "d": 2, "q": "How are retries implemented safely?", "a": "Bounded retry count, exponential backoff, idempotency keys on the underlying operation, and <em>retry only on transient errors<\/em> (network, rate limit) — not on logic errors that would compound damage."}, {"n": 24, "d": 2, "q": "How are rollbacks implemented for agent-authored changes?", "a": "PR-based changes give natural rollback (revert the merge). For runtime changes, use environment promotion patterns: roll back by re-deploying the previous artifact. Agents shouldn&#x27;t perform direct prod mutations without a versioned, reversible artifact."}, {"n": 25, "d": 2, "q": "What is an &quot;escalation path&quot; for an agent?", "a": "A predefined route to human attention when the agent&#x27;s confidence is low or it hits an unsafe condition — typically by tagging a CODEOWNER, opening an issue with a <code>needs-human<\/code> label, or pausing in an environment that requires approval."}, {"n": 26, "d": 2, "q": "How do you ensure traceability for agent actions?", "a": "Every agent action runs inside a workflow run with full logs, every artifact (plans, diffs, evaluations) is uploaded as a workflow artifact or PR comment, and every commit is signed/attributed to the agent&#x27;s identity (bot account or GitHub App)."}, {"n": 27, "d": 3, "q": "When do you use short-term vs. long-term vs. external memory?", "a": "<strong>Short-term<\/strong> for context within a single task/run (prompt window). <strong>Long-term<\/strong> for stable facts about the project/team (custom instructions, AGENTS.md, repo-level config). <strong>External<\/strong> for task-spanning artifacts (issue history, PR comments, knowledge bases accessed via MCP)."}, {"n": 28, "d": 3, "q": "What does &quot;scope agent memory to task-relevant information&quot; mean?", "a": "Only inject memory items that the <em>current task<\/em> needs. Avoid loading the entire project context — it dilutes signal, increases cost, and leaks information across task boundaries."}, {"n": 29, "d": 3, "q": "How do you define memory expiration, pruning, and reset rules?", "a": "Expire ephemeral memory at task end; prune long-term memory items that aren&#x27;t referenced for N runs; reset memory on context change (new branch, new issue) — implemented via the agent&#x27;s config and/or a memory store TTL."}, {"n": 30, "d": 3, "q": "What is a &quot;durable artifact&quot; for agent task progress?", "a": "A persisted, inspectable record — PR description checkboxes, an issue with progress comments, a workflow artifact JSON, or a state file in a tracking branch — that survives a run termination."}, {"n": 31, "d": 3, "q": "How does an agent resume work without repeating steps?", "a": "Read its durable state artifact at the start of every run, skip already-completed steps, and continue from the last incomplete step. Idempotent tools make this safe."}, {"n": 32, "d": 3, "q": "What is &quot;context drift&quot; during extended execution?", "a": "Gradual divergence between the agent&#x27;s working assumptions and the actual repo/task state — e.g., the agent edits an outdated copy of a file because it&#x27;s still working from cached context. Detected by re-reading source state at checkpoints and comparing to in-memory state."}, {"n": 33, "d": 3, "q": "How do you share agent state across tools and runs?", "a": "A canonical state artifact (issue, PR, dedicated tracking branch, or external store) that every tool reads/writes. No tool keeps private mutable state."}, {"n": 34, "d": 3, "q": "How do you prevent conflicting context?", "a": "Single source of truth (one state artifact), serialized writes (no two agents updating the same state simultaneously), and explicit handoffs between agents."}, {"n": 35, "d": 3, "q": "How do you prevent stale context?", "a": "Re-read the canonical state at the start of each tool invocation, and validate any cached assumption against current repo state before acting on it."}, {"n": 36, "d": 4, "q": "How are success criteria specified for an agent task?", "a": "As pass/fail checks against expected outcomes: tests must pass, code scanning must be clean, the PR must meet template requirements, performance metrics must stay within bounds. Encoded as <strong>required status checks<\/strong>."}, {"n": 37, "d": 4, "q": "Qualitative vs. quantitative evaluation signals — examples of each.", "a": "<strong>Quantitative<\/strong>: test pass rate, code scanning alerts count, performance delta, coverage delta. <strong>Qualitative<\/strong>: reviewer comments, custom-rubric LLM-judge scores, adherence to coding conventions."}, {"n": 38, "d": 4, "q": "How do you align evaluation with development intent?", "a": "The eval signals should be the <em>same signals a human developer would be judged on<\/em> — tests, lint, security scans, review comments — not artificial agent-only metrics. This keeps agents accountable to the team&#x27;s actual quality bar."}, {"n": 39, "d": 4, "q": "What automated scanning tools produce evaluation signals?", "a": "GitHub <strong>code scanning<\/strong> (CodeQL), <strong>secret scanning<\/strong>, <strong>Dependabot<\/strong>, <strong>dependency review action<\/strong>, and any third-party scanners surfaced as <strong>check runs<\/strong> or SARIF uploads."}, {"n": 40, "d": 4, "q": "What artifacts do you inspect to diagnose an agent failure?", "a": "Workflow run <strong>logs<\/strong>, the agent&#x27;s structured <strong>plan<\/strong>, <strong>execution traces<\/strong> (tool calls in order), final <strong>outputs/diffs<\/strong>, and any <strong>uploaded artifacts<\/strong> (intermediate state, evaluations)."}, {"n": 41, "d": 4, "q": "Three root-cause categories for agent failures.", "a": "(1) <strong>Reasoning errors<\/strong> — wrong plan, wrong inference; (2) <strong>Tool misuse<\/strong> — calling the right tool incorrectly or the wrong tool; (3) <strong>Context/environment issues<\/strong> — stale context, missing permissions, network/firewall blocks."}, {"n": 42, "d": 4, "q": "How do you tune an agent that produces wrong reasoning?", "a": "Revise its <strong>custom instructions<\/strong> / system prompt, add few-shot examples in the agent config, or constrain its allowed plans via a structured planning schema."}, {"n": 43, "d": 4, "q": "How do you tune memory usage problems?", "a": "Adjust what&#x27;s loaded into context (scope memory more tightly), shorten or expire stale memory, or move stable facts from prompt-context into long-term memory."}, {"n": 44, "d": 4, "q": "How do you tune tool-usage problems?", "a": "Remove or rename ambiguously named tools, tighten permissions, add tool descriptions/examples to the agent config, or route through an orchestrator agent that picks the tool for sub-agents."}, {"n": 45, "d": 5, "q": "Common orchestration patterns for coordinating multiple agents.", "a": "<strong>Sequential pipeline<\/strong> (planner → coder → reviewer), <strong>fan-out/fan-in<\/strong> (planner splits work to N parallel agents, then merges), <strong>supervisor pattern<\/strong> (one agent dispatches and reviews others), <strong>debate/critic pattern<\/strong> (two agents argue, third decides)."}, {"n": 46, "d": 5, "q": "How do you isolate agents for parallel execution?", "a": "Each agent works on its own branch (no shared working directory), with non-overlapping file scopes, separate workflow runs, and independent token scopes. Merge conflicts are detected at the PR layer."}, {"n": 47, "d": 5, "q": "How do you detect overlapping code changes between agents?", "a": "Branch-level conflict detection at merge time, file-scope declarations in each agent&#x27;s plan compared before execution, or a coordination layer (supervisor) that allocates non-overlapping file sets."}, {"n": 48, "d": 5, "q": "Resolving contradictory outputs from multiple agents — approaches.", "a": "A <strong>judge/reconciler agent<\/strong> with a defined arbitration rule, a <strong>voting<\/strong> scheme over N agent outputs, or <strong>human-in-the-loop<\/strong> review when disagreement exceeds a threshold."}, {"n": 49, "d": 5, "q": "What artifacts make multi-agent workflows auditable?", "a": "Per-agent workflow runs with logs, a top-level orchestration record (issue or workflow run) that links every sub-run, decision logs at each handoff, and a final reconciled output artifact."}, {"n": 50, "d": 5, "q": "How do you perform post-hoc analysis of multi-agent behavior?", "a": "Replay traces from logs, compare each agent&#x27;s plan vs. outcome, look for repeated handoff failures, and use the audit trail to identify which agent introduced the divergence."}, {"n": 51, "d": 5, "q": "How do you identify a stalled agent execution?", "a": "Workflow timeouts (<code>timeout-minutes<\/code>), heartbeat artifacts the agent updates periodically, and orchestrator checks that flag sub-agents that have produced no progress within a budget."}, {"n": 52, "d": 5, "q": "Recovery patterns for multi-agent failures.", "a": "<strong>Rollback<\/strong> the entire pipeline (revert orchestrator&#x27;s branch), <strong>rerun<\/strong> the failed sub-agent in isolation, <strong>fall back<\/strong> to a simpler agent or human, and <strong>circuit-break<\/strong> further automation when failure rates exceed a threshold."}, {"n": 53, "d": 5, "q": "How do you safely add a new agent to an existing workflow?", "a": "Deploy in shadow mode first (run alongside, compare outputs, no merge authority), gate behind a feature flag, then promote once metrics are equivalent or better."}, {"n": 54, "d": 5, "q": "How do you replace an agent without disrupting active workflows?", "a": "Versioned agent configs, route a percentage of traffic to the new agent (canary), then swap once parity confirmed. In-flight runs complete on the old version."}, {"n": 55, "d": 5, "q": "How do you retire an agent while preserving auditability?", "a": "Archive the agent&#x27;s config in git history, retain all past workflow runs and artifacts (subject to retention policy), and document the retirement decision in a CHANGELOG or governance doc so the audit trail survives."}, {"n": 56, "d": 6, "q": "How do you classify agent actions by risk?", "a": "Triage on three axes: <strong>operational risk<\/strong> (does failure break things?), <strong>security risk<\/strong> (could it leak or compromise secrets/data?), <strong>compliance risk<\/strong> (does it touch regulated systems or require auditable change-control?). Highest risk → most human oversight."}, {"n": 57, "d": 6, "q": "How do you &quot;right-size&quot; human intervention?", "a": "Map each action category to an autonomy level: fully autonomous for low-risk (lint fixes, doc updates), approval-gated for medium-risk (logic changes, dependency bumps), human-authored for highest-risk (production deploys, secrets, schema migrations)."}, {"n": 58, "d": 6, "q": "What actions require explicit human authorization?", "a": "Irreversible changes (data deletion, schema destructive ops), compliance-sensitive changes, anything touching production secrets, dependency additions, and CI/CD pipeline modifications."}, {"n": 59, "d": 6, "q": "How do you block actions that violate policy?", "a": "<strong>Pre-action policy checks<\/strong> in the agent (refusal logic), <strong>org-level rulesets<\/strong> preventing forbidden push patterns, <strong>required workflows<\/strong> that enforce policy scans, and <strong>CODEOWNERS<\/strong> on sensitive paths requiring named approvers."}, {"n": 60, "d": 6, "q": "How do you enforce least-privilege execution context?", "a": "Use the smallest-scope token possible (<code>GITHUB_TOKEN<\/code> with minimal <code>permissions:<\/code> block, fine-grained PAT scoped to one repo, or GitHub App installation token per repo), environment-scoped secrets, branch-scoped workflows."}, {"n": 61, "d": 6, "q": "What does &quot;controlled path for irreversible changes&quot; mean?", "a": "Wrap the change in a workflow that requires environment approval, runs only on a specific protected branch, produces an inspectable plan before applying, and emits an immutable audit record."}, {"n": 62, "d": 6, "q": "How do you preserve velocity while still enforcing guardrails?", "a": "Approvals only where they actually reduce risk. Routine, reversible PRs flow through automated checks; high-risk operations get gated. Every approval should buy meaningful safety, not perform compliance theater."}, {"n": 63, "d": 6, "q": "What does &quot;GitHub as the system of record&quot; mean for an agent?", "a": "All agent activity is anchored in a GitHub primitive — commit, PR, issue, workflow run, artifact, or check — so there&#x27;s no off-platform state to lose, dispute, or hide. Everything is auditable, attributable, and replayable."}, {"n": 64, "d": 6, "q": "What does &quot;GitHub as the control plane&quot; mean?", "a": "The same GitHub primitives that record activity (branch protection, CODEOWNERS, required checks, environments) also <em>enforce<\/em> policy. Control and observation use the same surface."}, {"n": 65, "d": 6, "q": "Where do custom instructions live for an agent?", "a": "Repository-level: <code>.github/copilot-instructions.md<\/code> (or <code>AGENTS.md<\/code> per repo). Org-level: organization custom instructions. The agent reads these in addition to its task-specific prompt."}, {"n": 66, "d": 6, "q": "What&#x27;s the &quot;contributor model&quot; for agent-generated work?", "a": "Agents are treated as contributors: they open PRs, get reviewed by humans/CODEOWNERS, follow the same branch protection rules, and their work is judged by the same standards. They don&#x27;t get a bypass lane."}, {"n": 67, "d": 6, "q": "Copilot <strong>setup steps<\/strong> — what are they?", "a": "Per-repository configuration steps that prepare the Copilot agent&#x27;s environment for that codebase (install dependencies, set up tools, configure language servers) so it has the context to be effective on first invocation."}], "mock": [{"n": 1, "d": 1, "type": "single", "q": "Your team is integrating a Copilot custom agent that produces draft refactors. Reviewers complain that they can&#x27;t tell <em>what the agent intended<\/em> before code changes appear in a PR. Which configuration most directly addresses the complaint?", "opts": [{"k": "A", "t": "Increase the agent&#x27;s autonomy level so it produces more diff context per PR."}, {"k": "B", "t": "Configure the agent to output a structured plan as a workflow artifact before any code changes are written."}, {"k": "C", "t": "Require two CODEOWNER approvals on every agent-authored PR."}, {"k": "D", "t": "Reduce the agent&#x27;s tool list to read-only operations."}], "correct": ["B"], "why": "Reviewers&#x27; complaint is about <em>visibility before code<\/em>. A structured plan artifact published before any change addresses that exactly. CODEOWNER counts (C) gate merge but don&#x27;t show intent earlier; (A) is opposite of the issue; (D) discards capability."}, {"n": 2, "d": 1, "type": "single", "q": "Which of the following is an anti-pattern when integrating an agent into the SDLC? (Select <strong>all<\/strong> that apply.)", "opts": [{"k": "A", "t": "The agent acts immediately without producing an inspectable plan."}, {"k": "B", "t": "The agent runs in a workflow with <code>permissions: { contents: read }<\/code>."}, {"k": "C", "t": "The agent&#x27;s commit author is the human who triggered the workflow."}, {"k": "D", "t": "The agent operates on a feature branch protected by branch protection rules."}], "correct": ["A"], "why": "Acting without an inspectable plan is the canonical anti-pattern. (B) is fine (read-only is safe), (C) is acceptable when the human triggers it, (D) is good practice."}, {"n": 3, "d": 1, "type": "single", "q": "You are designing a &quot;research → propose → apply&quot; agent flow. Which separation produces the most inspectable workflow?", "opts": [{"k": "A", "t": "One job that does all three phases sequentially with grouped logs."}, {"k": "B", "t": "A planning job that uploads a plan artifact, a reviewer-approved <code>workflow_dispatch<\/code> to begin the action job, then an evaluation job."}, {"k": "C", "t": "A single job with <code>if: github.actor == &#x27;admin&#x27;<\/code> gating the action step."}, {"k": "D", "t": "Three sequential jobs in the same workflow with <code>needs:<\/code> dependencies."}], "correct": ["B"], "why": "Separation of plan/approve/act/evaluate into discrete artifact-producing steps is the inspectability pattern. (A) groups logs but doesn&#x27;t gate; (C) is identity gating only; (D) sequential jobs alone don&#x27;t add approval gates."}, {"n": 4, "d": 1, "type": "single", "q": "A regulated team is concerned about agent autonomy. Which design preserves velocity while controlling risk?", "opts": [{"k": "A", "t": "Require human approval on every agent-authored PR regardless of change category."}, {"k": "B", "t": "Disable agent access during business hours."}, {"k": "C", "t": "Categorize actions by operational/security/compliance risk and require approval only for high-risk categories."}, {"k": "D", "t": "Run agents only in a dedicated repository disconnected from production."}], "correct": ["C"], "why": "Risk-tiered autonomy is the published guidance. (A) is approval theater; (B)(D) reduce velocity without proportionate safety gain."}, {"n": 5, "d": 1, "type": "single", "q": "Which artifact is the most appropriate &quot;inspectable artifact&quot; for an agent&#x27;s plan in a standard GitHub workflow?", "opts": [{"k": "A", "t": "A console log line in the workflow run."}, {"k": "B", "t": "An <code>actions/upload-artifact<\/code>-uploaded JSON or markdown plan document referenced from the PR description."}, {"k": "C", "t": "An entry in an external Notion database."}, {"k": "D", "t": "A comment in the agent&#x27;s source code."}], "correct": ["B"], "why": "A workflow artifact referenced from the PR is the canonical inspectable artifact. (A) is ephemeral, (C) is off-platform, (D) isn&#x27;t an artifact."}, {"n": 6, "d": 1, "type": "single", "q": "You want to define success criteria for an agent task that performs a dependency upgrade. Which combination is most robust?", "opts": [{"k": "A", "t": "Tests pass; no new code scanning alerts; PR template required fields completed."}, {"k": "B", "t": "The agent reports &quot;success&quot; in its trace log."}, {"k": "C", "t": "The PR is opened within 5 minutes of triggering."}, {"k": "D", "t": "A human approves the PR description."}], "correct": ["A"], "why": "Multiple objective criteria mirroring human-contributor judgment. (B) is self-reported, (C) measures speed not quality, (D) is subjective."}, {"n": 7, "d": 1, "type": "single", "q": "Your agent occasionally takes actions that contradict its earlier plan. What is the most direct architectural fix?", "opts": [{"k": "A", "t": "Increase the agent&#x27;s memory window."}, {"k": "B", "t": "Require the agent to re-read and acknowledge its plan artifact at the start of the action phase, and abort if action steps diverge from the plan."}, {"k": "C", "t": "Switch to a more capable model."}, {"k": "D", "t": "Disable retries."}], "correct": ["B"], "why": "Plan/action divergence is fixed by making the plan a hard contract, not by upgrading the model or memory."}, {"n": 8, "d": 2, "type": "single", "q": "What does an MCP server primarily provide to a Copilot custom agent?", "opts": [{"k": "A", "t": "A vector database for long-term memory."}, {"k": "B", "t": "A standardized protocol for exposing external tools, APIs, or data sources the agent can invoke."}, {"k": "C", "t": "A replacement for GitHub Actions runners."}, {"k": "D", "t": "A static prompt-template registry."}], "correct": ["B"], "why": "MCP is the standardized tool-exposure protocol. (A) is wrong (memory is separate), (C) is wrong (MCP doesn&#x27;t replace runners), (D) is wrong."}, {"n": 9, "d": 2, "type": "single", "q": "You configured an MCP server but the agent will not invoke it in your organization. Other agents in the org work fine. Which check should you perform <strong>first<\/strong>?", "opts": [{"k": "A", "t": "Confirm the server appears on the organization&#x27;s MCP allow list."}, {"k": "B", "t": "Restart the runner."}, {"k": "C", "t": "Increase the workflow timeout."}, {"k": "D", "t": "Rotate the workflow&#x27;s <code>GITHUB_TOKEN<\/code>."}], "correct": ["A"], "why": "Allow-list misses are the most common cause when other agents work. Always check the allow list before deeper debugging."}, {"n": 10, "d": 2, "type": "single", "q": "What is the purpose of the GitHub <strong>remote MCP server<\/strong>?", "opts": [{"k": "A", "t": "To replace local MCP servers with cloud-hosted ones for any vendor."}, {"k": "B", "t": "To expose GitHub&#x27;s own APIs (issues, PRs, code search) to agents through MCP."}, {"k": "C", "t": "To proxy outbound network calls from the Copilot cloud agent firewall."}, {"k": "D", "t": "To synchronize state between multiple Copilot subscriptions."}], "correct": ["B"], "why": "The GitHub remote MCP server exposes GitHub&#x27;s APIs as MCP tools."}, {"n": 11, "d": 2, "type": "yn", "q": "Which of the following statements about MCP allow lists are true? (Select Y/N for each.)", "opts": [{"k": "a", "t": "MCP allow lists restrict which MCP servers an organization&#x27;s agents may connect to."}, {"k": "b", "t": "MCP allow lists set permission levels (read/write) for each MCP tool."}, {"k": "c", "t": "Servers not on the allow list are blocked even if explicitly referenced in an agent&#x27;s config."}, {"k": "d", "t": "MCP allow lists eliminate the need for per-tool permissions in the agent&#x27;s manifest."}], "correct": ["Y", "N", "Y", "N"], "why": "(a) Yes — that&#x27;s its purpose. (b) No — permissions live in agent/tool config, not allow lists. (c) Yes — allow lists are enforced regardless of agent intent. (d) No — per-tool permissions still apply within an allowed server."}, {"n": 12, "d": 2, "type": "single", "q": "You want a Copilot custom agent to be invoked from a CI workflow when a PR is opened. Which is the most direct configuration?", "opts": [{"k": "A", "t": "Trigger a GitHub Actions workflow on <code>pull_request: [opened]<\/code> with a step that runs the agent."}, {"k": "B", "t": "Configure a webhook in repository settings to call the agent&#x27;s HTTP endpoint."}, {"k": "C", "t": "Add the agent to the repository&#x27;s CODEOWNERS file."}, {"k": "D", "t": "Define the agent in <code>.github/dependabot.yml<\/code>."}], "correct": ["A"], "why": "Standard GitHub Actions trigger pattern. (B) is custom plumbing, (C) doesn&#x27;t run code, (D) is for dependency updates only."}, {"n": 13, "d": 2, "type": "single", "q": "Your agent must create branches and pull requests autonomously. Which <strong>minimum<\/strong> <code>permissions:<\/code> block in the workflow file is appropriate?", "opts": [{"k": "A", "t": "<code>permissions: { contents: read, pull-requests: read }<\/code>"}, {"k": "B", "t": "<code>permissions: { contents: write, pull-requests: write }<\/code>"}, {"k": "C", "t": "<code>permissions: write-all<\/code>"}, {"k": "D", "t": "<code>permissions: { actions: write }<\/code>"}], "correct": ["B"], "why": "Minimum needed to create branches and PRs. (A) is read-only, (C) is broader than needed, (D) is for managing workflows."}, {"n": 14, "d": 2, "type": "single", "q": "A team wants to allow the Copilot cloud agent to call exactly two external APIs and nothing else. Which control should they configure?", "opts": [{"k": "A", "t": "CODEOWNERS for the agent&#x27;s branch."}, {"k": "B", "t": "The Copilot cloud agent firewall, with an allow list of the two API hosts."}, {"k": "C", "t": "Repository secret scoping."}, {"k": "D", "t": "Branch protection rules on <code>main<\/code>."}], "correct": ["B"], "why": "The Copilot cloud agent firewall is the named control for egress allow-listing."}, {"n": 15, "d": 2, "type": "single", "q": "An agent&#x27;s tool call to a flaky external service occasionally fails. Which retry strategy is most appropriate?", "opts": [{"k": "A", "t": "Retry up to 10 times immediately on any error."}, {"k": "B", "t": "Bounded retries with exponential backoff, scoped to transient errors (network, rate-limit), with idempotency keys on the underlying operation."}, {"k": "C", "t": "Retry once, then escalate to a human regardless of error type."}, {"k": "D", "t": "Disable retries and let the workflow fail."}], "correct": ["B"], "why": "Standard safe-retry pattern: bounded, backoff, idempotency, scoped to transient errors."}, {"n": 16, "d": 2, "type": "single", "q": "You need to scope an agent so that it can only modify a single repository, not the entire organization. Which token approach is most aligned with least-privilege?", "opts": [{"k": "A", "t": "A classic personal access token with <code>repo<\/code> scope from the team lead."}, {"k": "B", "t": "The workflow&#x27;s <code>GITHUB_TOKEN<\/code>, which is automatically scoped to that repository."}, {"k": "C", "t": "A GitHub App installation token granted at the organization level on all repositories."}, {"k": "D", "t": "An OAuth token from a user with admin rights on all repos."}], "correct": ["B"], "why": "<code>GITHUB_TOKEN<\/code> is the textbook least-privilege option for in-repo work. (A) over-scopes by user, (C) over-scopes by org, (D) is far too broad."}, {"n": 17, "d": 2, "type": "single", "q": "Which combination provides traceability and accountability for autonomous agent actions in a GitHub workflow?", "opts": [{"k": "A", "t": "Workflow run logs + signed commits attributed to the bot identity + PR comments documenting key decisions."}, {"k": "B", "t": "A single end-of-run summary email to the team."}, {"k": "C", "t": "Disabling actions logs to reduce noise."}, {"k": "D", "t": "Storing the agent&#x27;s reasoning in a private Slack channel."}], "correct": ["A"], "why": "The three-pillar pattern: logs, attribution, and decisional comments."}, {"n": 18, "d": 3, "type": "single", "q": "Where do <strong>long-term<\/strong>, project-stable agent instructions belong?", "opts": [{"k": "A", "t": "Injected into the user prompt each invocation."}, {"k": "B", "t": "In <code>.github/copilot-instructions.md<\/code> (or <code>AGENTS.md<\/code>) in the repository."}, {"k": "C", "t": "In an environment secret."}, {"k": "D", "t": "Hard-coded into the agent&#x27;s source binary."}], "correct": ["B"], "why": "Repo-level instructions file is the canonical home for stable long-term agent guidance."}, {"n": 19, "d": 3, "type": "single", "q": "An agent is configured to load the entire repository&#x27;s documentation into its working context every invocation. Performance is poor and answers are diluted. Which adjustment best applies?", "opts": [{"k": "A", "t": "Switch to a larger context window model."}, {"k": "B", "t": "Scope memory to task-relevant information only; load only the docs referenced by the current task."}, {"k": "C", "t": "Increase retries."}, {"k": "D", "t": "Disable memory entirely."}], "correct": ["B"], "why": "Scope memory to task-relevant — published Domain 3 bullet. Bigger windows and more retries don&#x27;t fix dilution."}, {"n": 20, "d": 3, "type": "single", "q": "An agent is mid-task when its workflow run is canceled. On the next invocation, you need it to resume without repeating completed steps. What pattern enables this?", "opts": [{"k": "A", "t": "Increase the workflow <code>timeout-minutes<\/code>."}, {"k": "B", "t": "Persist task progress as a durable artifact (PR checklist, state file, or issue comments), and have the agent read it at the start of each run to skip completed steps."}, {"k": "C", "t": "Set <code>concurrency: { group: agent-task, cancel-in-progress: false }<\/code>."}, {"k": "D", "t": "Use a larger runner."}], "correct": ["B"], "why": "Durable progress artifact pattern is the published resumption mechanism."}, {"n": 21, "d": 3, "type": "single", "q": "Which of the following describes <strong>context drift<\/strong> in an extended agent execution?", "opts": [{"k": "A", "t": "The agent&#x27;s responses become slower over time as memory grows."}, {"k": "B", "t": "The agent acts on cached or stale context that no longer matches the actual repo state."}, {"k": "C", "t": "The agent&#x27;s prompt template becomes too long."}, {"k": "D", "t": "The workflow run consumes too much GitHub Actions quota."}], "correct": ["B"], "why": "Context drift specifically = action-state divergence; the others are unrelated performance/scale issues."}, {"n": 22, "d": 3, "type": "single", "q": "Two agents in a workflow each maintain their own local state and reach conflicting conclusions about the current branch state. What&#x27;s the fix?", "opts": [{"k": "A", "t": "Give one agent priority over the other."}, {"k": "B", "t": "Use a single canonical state artifact that both agents read and update through serialized writes."}, {"k": "C", "t": "Run the agents in different repositories."}, {"k": "D", "t": "Reduce both agents&#x27; memory to short-term only."}], "correct": ["B"], "why": "Single source of truth + serialized writes is the canonical fix."}, {"n": 23, "d": 4, "type": "multi", "q": "Which of the following are <strong>automated<\/strong> evaluation signals you should configure for an agent&#x27;s output? (Select <strong>all<\/strong> that apply.)", "opts": [{"k": "A", "t": "Code scanning (CodeQL) alerts."}, {"k": "B", "t": "Secret scanning results."}, {"k": "C", "t": "Dependabot dependency review."}, {"k": "D", "t": "Reviewer commentary in PR threads."}], "correct": ["A", "B", "C"], "why": "All three are automated scanners. (D) is human input, not automated."}, {"n": 24, "d": 4, "type": "single", "q": "An agent&#x27;s PRs frequently pass tests but introduce performance regressions on a critical path. The team wants this caught automatically before merge. Which approach is most appropriate?", "opts": [{"k": "A", "t": "Ask reviewers to read every diff carefully."}, {"k": "B", "t": "Add a performance benchmark step that produces a required status check; fail the check if regression exceeds threshold."}, {"k": "C", "t": "Disable the agent for critical-path files."}, {"k": "D", "t": "Increase test timeout values."}], "correct": ["B"], "why": "Required status check on a benchmark is the standard gate. (A) doesn&#x27;t scale, (C) over-restricts, (D) hides the regression."}, {"n": 25, "d": 4, "type": "single", "q": "An agent&#x27;s failure trace shows that it called the wrong tool for a task. Which root-cause category does this most closely match?", "opts": [{"k": "A", "t": "Reasoning error."}, {"k": "B", "t": "Tool misuse."}, {"k": "C", "t": "Context or environment issue."}, {"k": "D", "t": "Network failure."}], "correct": ["B"], "why": "Wrong tool call = tool misuse by definition."}, {"n": 26, "d": 4, "type": "single", "q": "After analyzing failures, you find that the agent consistently misinterprets a custom internal API because its description in the agent&#x27;s config is ambiguous. What is the most appropriate tuning step?", "opts": [{"k": "A", "t": "Revise the agent&#x27;s tool descriptions and add usage examples in its config."}, {"k": "B", "t": "Increase the agent&#x27;s max-token budget."}, {"k": "C", "t": "Remove the tool from the agent&#x27;s available list."}, {"k": "D", "t": "Switch to a different LLM provider."}], "correct": ["A"], "why": "Tune by revising tool descriptions/examples. (B)(D) are unrelated; (C) discards capability."}, {"n": 27, "d": 4, "type": "single", "q": "Which of the following best aligns evaluation criteria with development intent?", "opts": [{"k": "A", "t": "Use eval signals that mirror the criteria a human contributor would be judged on (tests, scans, review feedback)."}, {"k": "B", "t": "Define agent-only metrics like &quot;tool calls per task&quot; as the primary success measure."}, {"k": "C", "t": "Disable code review for agent-authored PRs to measure raw agent capability."}, {"k": "D", "t": "Use only the LLM&#x27;s self-reported confidence score."}], "correct": ["A"], "why": "Alignment with contributor judgment criteria is the published principle."}, {"n": 28, "d": 4, "type": "multi", "q": "Which artifacts are most useful when diagnosing a failed agent run? (Select <strong>all<\/strong> that apply.)", "opts": [{"k": "A", "t": "Workflow run logs."}, {"k": "B", "t": "The agent&#x27;s structured plan output."}, {"k": "C", "t": "The execution trace (tool calls in order)."}, {"k": "D", "t": "The uploaded artifacts (intermediate state, evaluations)."}], "correct": ["A", "B", "C", "D"], "why": "All four are the listed diagnostic surfaces."}, {"n": 29, "d": 4, "type": "single", "q": "An agent&#x27;s reasoning is consistently wrong about the team&#x27;s preferred coding style. Which tuning is most direct?", "opts": [{"k": "A", "t": "Update the agent&#x27;s custom instructions in <code>.github/copilot-instructions.md<\/code> with the team&#x27;s style conventions."}, {"k": "B", "t": "Increase the agent&#x27;s autonomy level."}, {"k": "C", "t": "Add a <code>style-check<\/code> retry loop."}, {"k": "D", "t": "Reduce the agent&#x27;s memory."}], "correct": ["A"], "why": "Custom instructions are the canonical home for team conventions."}, {"n": 30, "d": 5, "type": "single", "q": "Which pattern best describes a &quot;supervisor&quot; multi-agent orchestration?", "opts": [{"k": "A", "t": "All agents act simultaneously and outputs are merged at the end."}, {"k": "B", "t": "One agent dispatches sub-tasks to worker agents and reviews their outputs."}, {"k": "C", "t": "Two agents debate and a third arbitrates."}, {"k": "D", "t": "Agents are arranged in a fixed sequential pipeline."}], "correct": ["B"], "why": "Supervisor = dispatch + review. (A) is fan-out/fan-in, (C) is debate/critic, (D) is sequential pipeline."}, {"n": 31, "d": 5, "type": "single", "q": "You run three agents in parallel on the same repository. To prevent conflicting code changes, which approach is best?", "opts": [{"k": "A", "t": "Run all three agents against the <code>main<\/code> branch directly."}, {"k": "B", "t": "Run each agent on its own feature branch with non-overlapping file scopes, and detect conflicts at PR-merge time."}, {"k": "C", "t": "Disable two of the agents and run them sequentially."}, {"k": "D", "t": "Increase the runner size to handle merges."}], "correct": ["B"], "why": "Branch isolation + file-scope separation + PR-time conflict detection is the parallel-agent pattern."}, {"n": 32, "d": 5, "type": "single", "q": "Two parallel agents produce contradictory PRs that modify the same file. Which recovery pattern is most appropriate?", "opts": [{"k": "A", "t": "Auto-merge both PRs."}, {"k": "B", "t": "A reconciler (judge agent) with a defined arbitration rule, or human-in-the-loop review if disagreement exceeds threshold."}, {"k": "C", "t": "Reject both PRs without review."}, {"k": "D", "t": "Force-push to overwrite one of the branches."}], "correct": ["B"], "why": "Reconciler agent or human-in-the-loop is the published recovery pattern."}, {"n": 33, "d": 5, "type": "single", "q": "Which artifact best supports post-hoc analysis of a multi-agent workflow?", "opts": [{"k": "A", "t": "A top-level orchestration record (issue or workflow run) linking every sub-agent&#x27;s run, with decision logs at handoffs."}, {"k": "B", "t": "A summary log message on the orchestrator&#x27;s exit."}, {"k": "C", "t": "Each agent&#x27;s local debug output, kept only on its runner."}, {"k": "D", "t": "A Slack thread between the team&#x27;s engineers."}], "correct": ["A"], "why": "Linked orchestration record with handoff logs is the auditable structure."}, {"n": 34, "d": 5, "type": "single", "q": "Your orchestrator detects that one of three parallel agents has produced no progress for 30 minutes. What&#x27;s the most appropriate first response?", "opts": [{"k": "A", "t": "Allow the agent to continue indefinitely."}, {"k": "B", "t": "Apply a workflow timeout, mark the run failed, and route the sub-task to a fallback path (rerun, alternative agent, or human)."}, {"k": "C", "t": "Increase the runner&#x27;s CPU allocation."}, {"k": "D", "t": "Cancel all three agents&#x27; runs."}], "correct": ["B"], "why": "Timeout + fallback path is the standard stalled-execution response."}, {"n": 35, "d": 5, "type": "single", "q": "You want to introduce a new agent into an existing multi-agent workflow without disrupting current runs. Which deployment is safest?", "opts": [{"k": "A", "t": "Replace the existing agent immediately and roll forward."}, {"k": "B", "t": "Deploy the new agent in shadow mode, run it alongside the existing one, compare outputs, then promote once parity is confirmed."}, {"k": "C", "t": "Run the new agent only on weekends."}, {"k": "D", "t": "Disable the existing agent for one week to validate the new one."}], "correct": ["B"], "why": "Shadow-mode parity check is the safe rollout."}, {"n": 36, "d": 5, "type": "single", "q": "A retired agent&#x27;s audit trail must remain accessible for compliance review. Which approach preserves auditability?", "opts": [{"k": "A", "t": "Delete the agent&#x27;s config and all associated workflow runs."}, {"k": "B", "t": "Archive the config in git history, retain workflow runs/artifacts per retention policy, and document the retirement in a governance record."}, {"k": "C", "t": "Move the workflow runs to a private external storage system not linked to the repository."}, {"k": "D", "t": "Disable workflow logging going forward."}], "correct": ["B"], "why": "Archive in git + retain runs + document = audit-trail preservation."}, {"n": 37, "d": 6, "type": "single", "q": "Which action category most clearly requires explicit human authorization?", "opts": [{"k": "A", "t": "Auto-formatting a markdown file."}, {"k": "B", "t": "Renaming a private variable in test code."}, {"k": "C", "t": "Modifying a CI/CD pipeline that deploys to production."}, {"k": "D", "t": "Adding a comment to an existing issue."}], "correct": ["C"], "why": "Production CI/CD changes are explicitly the high-risk category."}, {"n": 38, "d": 6, "type": "single", "q": "Which mechanism most directly enforces least-privilege execution context for an agent in a workflow?", "opts": [{"k": "A", "t": "A workflow <code>permissions:<\/code> block scoped to the minimum needed for the task."}, {"k": "B", "t": "A team-wide announcement in Slack."}, {"k": "C", "t": "A pinned issue describing expected behavior."}, {"k": "D", "t": "A README note in the repository root."}], "correct": ["A"], "why": "Workflow <code>permissions:<\/code> block is the GitHub primitive for least privilege at execution time."}, {"n": 39, "d": 6, "type": "single", "q": "You want to require approval before an agent can deploy to production but not for routine PRs. Which GitHub feature is most appropriate?", "opts": [{"k": "A", "t": "Branch protection rules on <code>main<\/code>."}, {"k": "B", "t": "An environment with required reviewers attached to the production deploy job."}, {"k": "C", "t": "CODEOWNERS for the entire <code>src/<\/code> directory."}, {"k": "D", "t": "A <code>WORKING-HOURS<\/code> setting on the repository."}], "correct": ["B"], "why": "Environment protection rules with required reviewers are the named gate for deploys."}, {"n": 40, "d": 6, "type": "multi", "q": "Which of the following minimize approval friction <em>without<\/em> reducing safety? (Select <strong>all<\/strong> that apply.)", "opts": [{"k": "A", "t": "Require approval only for irreversible or compliance-sensitive changes."}, {"k": "B", "t": "Use CODEOWNERS on sensitive paths so reviews are targeted, not global."}, {"k": "C", "t": "Require two reviewers on every PR including doc typos."}, {"k": "D", "t": "Use environment protection rules so prod deploys are gated but dev flows freely."}], "correct": ["A", "B", "D"], "why": "All target risk-proportionate approval; (C) is approval theater that adds friction without proportionate safety."}, {"n": 41, "d": 6, "type": "single", "q": "An agent is about to perform an irreversible production change (e.g., dropping a database column). Which set of controls is the <strong>best<\/strong> combination?", "opts": [{"k": "A", "t": "CODEOWNERS approval on the migration file + environment protection rule with required reviewers on the prod environment + a structured plan artifact reviewed before the action job runs."}, {"k": "B", "t": "A retry loop with exponential backoff."}, {"k": "C", "t": "A larger workflow <code>timeout-minutes<\/code> value."}, {"k": "D", "t": "Allow the agent to proceed and revert later if needed."}], "correct": ["A"], "why": "Defense-in-depth: code-level review (CODEOWNERS) + deploy-gate (environment) + intent review (plan artifact)."}], "quiz": [{"q": "What primary capability distinguishes an AI agent from an AI assistant within a GitHub repository context?", "hint": "Consider which behavior involves a transition from providing suggestions to executing repository actions.", "opts": [{"t": "The ability to generate code snippets and explain error messages in a chat interface.", "ok": false, "r": "Generating suggestions and explanations is characteristic of assistant-based behavior, which requires manual application by a user."}, {"t": "The ability to independently create durable artifacts like branches, commits, and pull requests.", "ok": true, "r": "An agent is goal-driven and uses tools to move work forward independently within the software development lifecycle."}, {"t": "The capacity to summarize long documentation files for quicker reading.", "ok": false, "r": "Summarization is a passive task typical of assistants and does not involve taking repository actions."}, {"t": "Providing checklists of risks associated with a specific code change.", "ok": false, "r": "While helpful, providing guidance or checklists is a reactive assistant behavior that leaves execution to the human."}]}, {"q": "In a well-designed agent architecture, how are agent responsibilities typically mapped to the Implementation and Validation stages of the SDLC?", "hint": "Think about the standard GitHub control surfaces that facilitate peer review and automated testing.", "opts": [{"t": "The agent directly merges changes to the default branch to increase development speed.", "ok": false, "r": "Direct-to-default pushes are considered an architectural anti-pattern that bypasses critical governance and safety mechanisms."}, {"t": "The agent operates as a CODEOWNER for all sensitive infrastructure directories.", "ok": false, "r": "Agents should be participants in the workflow, while CODEOWNERS is a mechanism for human experts to supervise high-impact changes."}, {"t": "Work is routed through branches, commits, and pull requests, using workflow runs as evidence.", "ok": true, "r": "Mapping agent work to these GitHub artifacts provides natural control surfaces where human policy can be enforced."}, {"t": "The agent replaces the deployment environment approvals with automated LLM reasoning.", "ok": false, "r": "Deployment for sensitive actions should remain restricted, often requiring explicit human approval through environments."}]}, {"q": "What is the primary architectural benefit of choosing a &#x27;Plan-first&#x27; pull request workflow over a combined &#x27;Plan + execution&#x27; workflow?", "hint": "Reflect on how validating the &#x27;why&#x27; and &#x27;how&#x27; before the &#x27;what&#x27; impacts overall system safety.", "opts": [{"t": "It eliminates the need for any human review before the final code is merged.", "ok": false, "r": "All agent workflows require review; the difference lies in the timing of the validation relative to code generation."}, {"t": "It allows for human alignment and validation of intent before any code is generated or risk is introduced.", "ok": true, "r": "Reviewing a plan before execution reduces the blast radius and prevents the agent from making unnecessary or incorrect changes."}, {"t": "It speeds up the development lifecycle by allowing the agent to skip CI checks.", "ok": false, "r": "Plan-first workflows are often preferred for high-risk environments where safety and intent alignment are more critical than speed."}, {"t": "It combines planning and execution into a single step to minimize the number of commits.", "ok": false, "r": "Combining these steps is the definition of a &#x27;Plan + execution&#x27; workflow, not a &#x27;Plan-first&#x27; one."}]}, {"q": "When defining a custom agent profile in YAML, which property is the only one strictly required for the file to be valid?", "hint": "Identify the field used by both humans and the system to understand the agent&#x27;s specialized expertise.", "opts": [{"t": "name", "ok": false, "r": "The name property is optional; if it is omitted, the agent&#x27;s filename is used as the default display identifier."}, {"t": "tools", "ok": false, "r": "If tools are not specified, the agent is granted access to all available tools by default."}, {"t": "description", "ok": true, "r": "The description is required to explain the agent&#x27;s purpose and capabilities, and it helps the system match the agent to specific tasks."}, {"t": "target", "ok": false, "r": "The target property is optional and defaults to both &#x27;vscode&#x27; and &#x27;github-copilot&#x27; if left unset."}]}, {"q": "Where must organization-level custom agent profiles be stored to be available across multiple repositories?", "hint": "The repository name includes a suffix indicating its restricted visibility within the organization.", "opts": [{"t": "In a directory named $/.github/agents/$ within the organization&#x27;s public README repository.", "ok": false, "r": "The agents must be stored in a specifically named private repository for organizational governance."}, {"t": "In a repository named $.github-private$ within a directory named $/agents/$.", "ok": true, "r": "Organizational custom agents are centralizing in the $.github-private$ repo to ensure broader availability while maintaining access control."}, {"t": "Directly inside the $.github/workflows/$ directory of every repository in the organization.", "ok": false, "r": "Workflows and agent profiles are distinct artifacts; agent profiles are defined in the $/agents/$ path."}, {"t": "In a global enterprise registry that does not use a backing Git repository.", "ok": false, "r": "Custom agents are defined using Markdown and YAML files stored within the GitHub platform&#x27;s repository structure."}]}, {"q": "How long do &#x27;memories&#x27; (repository-level facts or user-level preferences) persist in Copilot Memory if they go unused?", "hint": "This period is roughly equivalent to four standard work weeks.", "opts": [{"t": "$14$ days", "ok": false, "r": "The persistence window is longer to ensure that relevant facts can bridge between less frequent development tasks."}, {"t": "$28$ days", "ok": true, "r": "Any stored fact or preference that is not used within a $28$-day period is automatically deleted to prevent stale information."}, {"t": "$90$ days", "ok": false, "r": "A $90$-day window would likely result in too much stale context being retained, potentially leading to context drift."}, {"t": "Indefinitely, until manually deleted by a repository owner.", "ok": false, "r": "While manual deletion is possible, the system includes an automatic expiration to manage context quality."}]}, {"q": "The Copilot cloud agent firewall is a key security guardrail, but what is a notable limitation regarding its coverage?", "hint": "Consider which components might have their own separate egress paths or initialization sequences.", "opts": [{"t": "It does not apply to MCP servers or processes started in $/copilot-setup-steps.yml$ files.", "ok": true, "r": "The firewall only restricts processes started via the agent&#x27;s Bash tool within the GitHub Actions appliance environment."}, {"t": "It only blocks traffic to unknown domains but allows all direct IP address connections.", "ok": false, "r": "The firewall can use both domains and URLs for allow-listing, effectively controlling outbound access."}, {"t": "It is disabled automatically whenever a custom agent uses the &#x27;edit&#x27; tool.", "ok": false, "r": "The firewall settings are persistent and configured at the organization or repository level regardless of specific tool usage."}, {"t": "It only applies to public repositories and cannot be enabled for private repositories.", "ok": false, "r": "Firewall controls are a core security feature available for repositories to prevent data exfiltration, especially in private settings."}]}, {"q": "What is the operational &#x27;cost&#x27; associated with steering an in-flight Copilot agent session by providing a new prompt?", "hint": "Each interaction in a session typically counts as a single standard unit of AI usage.", "opts": [{"t": "It consumes $5$ premium requests per message.", "ok": false, "r": "The cost of steering is designed to be manageable to allow for interactive iteration."}, {"t": "It is free for the first three steering messages per session.", "ok": false, "r": "Every message sent to an agent session involves LLM processing and is counted toward usage limits."}, {"t": "It consumes $1$ premium request per message.", "ok": true, "r": "Each follow-up instruction sent to a working agent session is billed as a single premium request."}, {"t": "It requires the creation of a new, separate pull request.", "ok": false, "r": "Steering allows the agent to adjust its current work within the same session and branch."}]}, {"q": "When configuring Model Context Protocol (MCP) governance, what is the functional relationship between an MCP registry and an allow list?", "hint": "Consider how discovery (finding tools) and enforcement (permitting tools) operate sequentially.", "opts": [{"t": "The allow list is checked after discovery in the registry but before any tool call is executed.", "ok": true, "r": "A server can be listed in a discovery registry but still be blocked by an organization-level allow list policy."}, {"t": "The registry automatically allow-lists any server that is successfully added to it.", "ok": false, "r": "Registries are catalogs for discovery; allow lists are enforcement mechanisms for governance and security."}, {"t": "The registry only contains local MCP servers, while the allow list only applies to remote servers.", "ok": false, "r": "Both local and remote servers can be categorized in registries and governed by allow lists."}, {"t": "Setting a registry URL is required before an allow list can be created.", "ok": false, "r": "Allow lists can be set to &#x27;Allow all&#x27; or &#x27;Registry only&#x27;, but they represent independent policy decisions."}]}, {"q": "According to the risk-based autonomy model, how should a high-risk task affecting $/infra/$ or $.github/workflows/$ be governed?", "hint": "Think about how GitHub&#x27;s routing mechanisms ensure that path-specific experts review sensitive changes.", "opts": [{"t": "Merge can be automated using GitHub automerge after a single successful check.", "ok": false, "r": "Automated merging is only recommended for low-risk changes like documentation or formatting."}, {"t": "It requires CODEOWNERS approval, multiple reviews, and potentially stricter rulesets.", "ok": true, "r": "High-risk changes necessitate greater human oversight and expert review to ensure security and operational stability."}, {"t": "The agent should be allowed to deploy directly to production to minimize downtime.", "ok": false, "r": "Production deployments are critical-risk and usually require environment approvals where the agent prepares but cannot execute."}, {"t": "The agent&#x27;s tools should be restricted to &#x27;read-only&#x27; regardless of the task intent.", "ok": false, "r": "Autonomy design is about scaling oversight, not necessarily disabling the agent&#x27;s ability to act."}]}, {"q": "How do GitHub &#x27;Agentic Workflows&#x27; differ from traditional GitHub Actions workflows in their execution model?", "hint": "Consider the difference between explicitly defining every command versus defining a desired final state.", "opts": [{"t": "Agentic workflows use YAML to define deterministic steps, while traditional workflows use natural language.", "ok": false, "r": "Traditional workflows are deterministic and YAML-defined, while agentic workflows describe intent in natural language."}, {"t": "Agentic workflows describe outcomes in Markdown and allow an agent to determine the necessary steps within frontmatter guardrails.", "ok": true, "r": "This model shifts from step-by-step instruction to outcome-based execution governed by security boundaries."}, {"t": "Traditional workflows run in sandboxed containers, while agentic workflows run directly on the GitHub web server.", "ok": false, "r": "Both run in isolated environments; agentic workflows are simply compiled into lock files for execution in GitHub Actions."}, {"t": "Agentic workflows replace the need for GITHUB_TOKEN permissions entirely.", "ok": false, "r": "Permissions and least-privilege principles remain critical for both workflow types to control repository access."}]}, {"q": "If an agent requires specific tokens or credentials to function, where should these be stored to differentiate them from standard repository automation secrets?", "hint": "The system maintains two distinct stores to ensure specialized agents can access the credentials they specifically need.", "opts": [{"t": "In the $/.github/agents/secrets.md$ file in the default branch.", "ok": false, "r": "Storing secrets in plain text in the repository is a major security anti-pattern."}, {"t": "As standard GitHub Actions secrets at the repository level.", "ok": false, "r": "Copilot cloud agent cannot access standard GitHub Actions secrets or variables in its environment."}, {"t": "In the &#x27;Agents secrets and variables&#x27; store at the organization or repository level.", "ok": true, "r": "GitHub provides a dedicated store for agent provisioning that is separate from the standard Actions secret boundary."}, {"t": "Embedded directly within the &#x27;prompt&#x27; section of the agent profile.", "ok": false, "r": "Secrets should never be placed in instruction files; they should be injected at runtime through protected boundaries."}]}, {"q": "When Copilot Memory retrieves a repository-level fact, what critical step does it perform to ensure the information is not stale?", "hint": "The system looks back at the specific source material used to generate the fact in the first place.", "opts": [{"t": "It ignores any fact that was created by a user with only read access.", "ok": false, "r": "Repository facts are only created by users with write access to begin with, so this is not a validation step."}, {"t": "It prompts the user to manually confirm the fact&#x27;s accuracy every time it is retrieved.", "ok": false, "r": "Manual confirmation would create a significant burden; instead, the system uses automated code-based validation."}, {"t": "It checks stored citations against the code in the current branch to confirm the information is still substantiated.", "ok": true, "r": "Validating facts against current code ensures that the agent&#x27;s reasoning is based on the actual state of the repository."}, {"t": "It automatically updates the repository&#x27;s documentation to match the stored fact.", "ok": false, "r": "Memory is used to inform the agent&#x27;s work, not to independently push unreviewed documentation changes."}]}, {"q": "Which security policy regarding pull request triggers is enabled by default to prevent unreviewed code from executing in a privileged environment?", "hint": "Consider the button a developer must click on a PR created by an external or automated contributor.", "opts": [{"t": "The agent is prohibited from creating any branch that starts with the prefix &#x27;agent/&#x27;.", "ok": false, "r": "Branch naming is a naming convention, not a security trigger policy."}, {"t": "Workflows are blocked from running until a user with write access approves them via the &#x27;Approve and run workflows&#x27; button.", "ok": true, "r": "This human-in-the-loop gate reduces the risk of malicious code running privileged automation automatically."}, {"t": "Only users with &#x27;Admin&#x27; permissions can view the session logs of an active agent.", "ok": false, "r": "Session logs are part of traceability and are typically available to those supervising the work, not just admins."}, {"t": "The agent is restricted to only reading files that have been modified in the last $7$ days.", "ok": false, "r": "An agent needs access to the full codebase for context, but its actions are bounded by branch and review policies."}]}, {"q": "How are commits authored by the Copilot cloud agent attributed to ensure traceability while acknowledging human oversight?", "hint": "Think about how co-authorship is used in pair programming to give credit (or responsibility) to two parties.", "opts": [{"t": "The commits are attributed solely to the human user who triggered the session.", "ok": false, "r": "Commits are authored by &#x27;GitHub Copilot&#x27; to clearly distinguish automated changes from human-written ones."}, {"t": "The commits are authored by &#x27;GitHub Copilot&#x27;, with the initiating developer marked as a co-author.", "ok": true, "r": "This attribution model provides clear evidence of who started the task and which system executed the work."}, {"t": "The commits are anonymous and only appear in the organization&#x27;s audit log.", "ok": false, "r": "Anonymous commits would degrade the audit trail; agent commits are signed and appear as &#x27;Verified&#x27; on GitHub."}, {"t": "The author is set to &#x27;GitHub Bot&#x27; and requires a manual GPG signature by an administrator.", "ok": false, "r": "Copilot signs its own commits, providing systemic confidence that the changes have not been altered."}]}]};
+
+/* ---------- Flashcards ---------- */
+(function () {
+  if (!REPO) return;
+  let deck = [...REPO.cards], idx = 0, flipped = false, domain = 0;
+  const $ = id => document.getElementById(id);
+  const filterWrap = $("fcDomainFilter");
+  ["All", 1, 2, 3, 4, 5, 6].forEach(d => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "btn btn-outline-secondary" + (d === "All" ? " active" : "");
+    b.textContent = d === "All" ? "All" : "D" + d;
+    b.addEventListener("click", () => {
+      domain = d === "All" ? 0 : d;
+      filterWrap.querySelectorAll("button").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      rebuild();
+    });
+    filterWrap.appendChild(b);
+  });
+  function rebuild(shuffle) {
+    deck = REPO.cards.filter(c => !domain || c.d === domain);
+    if (shuffle) for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    idx = 0; flipped = false; render();
+  }
+  function render() {
+    const c = deck[idx];
+    $("fcText").innerHTML = flipped ? c.a : c.q;
+    $("fcSide").textContent = flipped ? "ANSWER — click for question" : "QUESTION — click to reveal";
+    $("fcDomainTag").textContent = `Domain ${c.d} · card ${c.n}`;
+    $("fcCounter").textContent = `${idx + 1} / ${deck.length}`;
+  }
+  const flip = () => { flipped = !flipped; render(); };
+  const move = dir => { idx = (idx + dir + deck.length) % deck.length; flipped = false; render(); };
+  $("flashcard").addEventListener("click", flip);
+  $("fcFlip").addEventListener("click", flip);
+  $("fcPrev").addEventListener("click", () => move(-1));
+  $("fcNext").addEventListener("click", () => move(1));
+  $("fcShuffle").addEventListener("click", () => rebuild(true));
+  document.addEventListener("keydown", e => {
+    if (e.target.matches("input, textarea")) return;
+    const rect = $("flashcard").getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > innerHeight) return; // only when card is on screen
+    if (e.key === "ArrowLeft") move(-1);
+    else if (e.key === "ArrowRight") move(1);
+    else if (e.key === " ") { e.preventDefault(); flip(); }
+  });
+  render();
+})();
+
+/* ---------- Quick quiz (instant feedback) ---------- */
+(function () {
+  if (!REPO) return;
+  const body = document.getElementById("quizBody");
+  let idx = 0, score = 0;
+  function start() { idx = 0; score = 0; renderQ(); }
+  function renderQ() {
+    if (idx >= REPO.quiz.length) {
+      const pct = Math.round(score / REPO.quiz.length * 100);
+      body.innerHTML = `
+        <div class="text-center py-4">
+          <div class="display-4 fw-bold">${score} / ${REPO.quiz.length}</div>
+          <p class="lead">${pct >= 70 ? "🎉 On track — " : "📚 Keep going — "}${pct}%</p>
+          <button class="btn btn-primary" style="background:var(--accent);border-color:var(--accent)" id="quizRestart">Restart quiz</button>
+        </div>`;
+      document.getElementById("quizRestart").addEventListener("click", start);
+      return;
+    }
+    const q = REPO.quiz[idx];
+    body.innerHTML = `
+      <div class="d-flex justify-content-between small text-body-secondary mb-2">
+        <span>Question ${idx + 1} of ${REPO.quiz.length}</span><span>Score: ${score}</span>
+      </div>
+      <p class="fw-semibold">${q.q}</p>
+      <div class="list-group mb-2" id="quizOpts">
+        ${q.opts.map((o, i) => `<button type="button" class="list-group-item list-group-item-action quiz-opt" data-i="${i}">${o.t}</button>`).join("")}
+      </div>
+      ${q.hint ? `<details class="small text-body-secondary mb-2"><summary>💡 Hint</summary>${q.hint}</details>` : ""}
+      <div id="quizFeedback"></div>`;
+    body.querySelectorAll(".quiz-opt").forEach(btn => btn.addEventListener("click", () => {
+      const i = +btn.dataset.i, o = q.opts[i];
+      if (o.ok) score++;
+      body.querySelectorAll(".quiz-opt").forEach(b => {
+        b.classList.add("disabled");
+        const opt = q.opts[+b.dataset.i];
+        if (opt.ok) b.classList.add("correct");
+        else if (b === btn) b.classList.add("wrong");
+      });
+      const correct = q.opts.find(x => x.ok);
+      document.getElementById("quizFeedback").innerHTML = `
+        <div class="alert ${o.ok ? "alert-success" : "alert-danger"} small">
+          <strong>${o.ok ? "Correct." : "Not quite."}</strong> ${o.r}
+          ${o.ok ? "" : `<hr class="my-2"><strong>Correct answer:</strong> ${correct.t}<br>${correct.r}`}
+        </div>
+        <button class="btn btn-sm btn-primary" style="background:var(--accent);border-color:var(--accent)" id="quizNext">
+          ${idx + 1 === REPO.quiz.length ? "See results" : "Next question →"}</button>`;
+      document.getElementById("quizNext").addEventListener("click", () => { idx++; renderQ(); });
+    }));
+  }
+  start();
+})();
+
+/* ---------- Mock exam (graded) ---------- */
+(function () {
+  if (!REPO) return;
+  const body = document.getElementById("mockBody"), result = document.getElementById("mockResult");
+  const LS_BEST = "gh600-mock-best";
+  const best = localStorage.getItem(LS_BEST);
+  if (best) document.getElementById("mockBest").innerHTML = `Personal best: <strong>${best}/41</strong>`;
+  const DNAMES = {1:"Architecture & SDLC",2:"Tool use & environment",3:"Memory, state & execution",4:"Evaluation & tuning",5:"Multi-agent coordination",6:"Guardrails & accountability"};
+  function render() {
+    let html = "", lastD = 0;
+    REPO.mock.forEach(q => {
+      if (q.d !== lastD) { html += `<h5 class="mt-4">Domain ${q.d} — ${DNAMES[q.d]}</h5>`; lastD = q.d; }
+      html += `<div class="card mb-3 mock-q" id="mq${q.n}"><div class="card-body small">
+        <p class="fw-semibold">${q.n}. ${q.q}${q.type === "multi" ? ' <span class="badge text-bg-info">select all that apply</span>' : ""}${q.type === "yn" ? ' <span class="badge text-bg-info">Y/N for each</span>' : ""}</p>`;
+      if (q.type === "yn") {
+        html += q.opts.map((o, i) => `
+          <div class="d-flex align-items-start gap-3 mb-2">
+            <div class="btn-group btn-group-sm" role="group">
+              <input type="radio" class="btn-check" name="mq${q.n}_${i}" id="mq${q.n}_${i}Y" value="Y"><label class="btn btn-outline-success" for="mq${q.n}_${i}Y">Y</label>
+              <input type="radio" class="btn-check" name="mq${q.n}_${i}" id="mq${q.n}_${i}N" value="N"><label class="btn btn-outline-danger" for="mq${q.n}_${i}N">N</label>
+            </div><div>(${o.k}) ${o.t}</div>
+          </div>`).join("");
+      } else {
+        const type = q.type === "multi" ? "checkbox" : "radio";
+        html += q.opts.map(o => `
+          <div class="form-check">
+            <input class="form-check-input" type="${type}" name="mq${q.n}" id="mq${q.n}${o.k}" value="${o.k}">
+            <label class="form-check-label" for="mq${q.n}${o.k}"><strong>${o.k}.</strong> ${o.t}</label>
+          </div>`).join("");
+      }
+      html += `<div class="mock-why mt-2" hidden></div></div></div>`;
+    });
+    body.innerHTML = html;
+    result.innerHTML = "";
+  }
+  function grade() {
+    let score = 0; const byDomain = {};
+    REPO.mock.forEach(q => {
+      let right;
+      if (q.type === "yn") {
+        right = q.opts.every((o, i) => (document.querySelector(`input[name="mq${q.n}_${i}"]:checked`) || {}).value === q.correct[i]);
+      } else {
+        const picked = [...document.querySelectorAll(`input[name="mq${q.n}"]:checked`)].map(x => x.value).sort();
+        right = JSON.stringify(picked) === JSON.stringify([...q.correct].sort());
+      }
+      if (right) score++;
+      (byDomain[q.d] ||= [0, 0])[right ? 0 : 1]++;
+      const card = document.getElementById("mq" + q.n);
+      card.classList.remove("graded-right", "graded-wrong");
+      card.classList.add(right ? "graded-right" : "graded-wrong");
+      const why = card.querySelector(".mock-why");
+      why.hidden = false;
+      why.innerHTML = `<div class="alert ${right ? "alert-success" : "alert-danger"} py-2 mb-0">
+        <strong>${right ? "✔ Correct" : "✘ Answer: " + q.correct.join(", ")}</strong> — ${q.why}</div>`;
+    });
+    const pct = Math.round(score / REPO.mock.length * 100);
+    const prev = +(localStorage.getItem(LS_BEST) || 0);
+    if (score > prev) { localStorage.setItem(LS_BEST, score); document.getElementById("mockBest").innerHTML = `Personal best: <strong>${score}/41</strong> 🏆`; }
+    result.innerHTML = `
+      <div class="alert ${score >= 29 ? "alert-success" : "alert-warning"}">
+        <h5 class="mb-1">${score} / ${REPO.mock.length} (${pct}%) — ${score >= 29 ? "at or above the ~70% pass target 🎉" : "below the ~70% pass target (29/41)"}</h5>
+        <div class="small">${Object.entries(byDomain).map(([d, [r, w]]) => `D${d}: ${r}/${r + w}`).join(" · ")}</div>
+      </div>`;
+    result.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  document.getElementById("mockGrade").addEventListener("click", grade);
+  document.getElementById("mockGrade2").addEventListener("click", grade);
+  document.getElementById("mockReset").addEventListener("click", () => { if (confirm("Clear all answers?")) render(); });
+  // timer
+  let t0 = null, tick = null;
+  document.getElementById("mockTimerBtn").addEventListener("click", function () {
+    if (tick) { clearInterval(tick); tick = null; this.textContent = "▶ Start timer"; return; }
+    t0 = t0 || Date.now();
+    this.textContent = "⏸ Pause";
+    tick = setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      const el = document.getElementById("mockTimer");
+      el.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+      el.className = "badge align-self-center " + (s >= 5400 ? "text-bg-danger" : "text-bg-secondary");
+    }, 1000);
+  });
+  render();
+})();
+
+/* ================= THEME ================= */
+const themeBtn = document.getElementById("themeToggle");
+function setTheme(t) {
+  document.documentElement.setAttribute("data-bs-theme", t);
+  themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+  localStorage.setItem(LS_THEME, t);
+}
+setTheme(localStorage.getItem(LS_THEME) || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+themeBtn.addEventListener("click", () =>
+  setTheme(document.documentElement.getAttribute("data-bs-theme") === "dark" ? "light" : "dark"));
+</script>
+</body>
+</html>
