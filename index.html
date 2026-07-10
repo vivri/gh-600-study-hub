@@ -106,6 +106,7 @@
     <li class="nav-item"><a class="nav-link toc-link" href="#skills">📋 Skills Measured</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#notes">🧠 Deep Study Notes</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#configs">⚙️ Config Cookbook</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#codeowners">🛡️ CODEOWNERS</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#diagrams">🗺️ Diagrams</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#flashcards">🎴 Flashcards</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#practice">📝 Practice</a></li>
@@ -996,6 +997,90 @@ by adding the `security` label.</code></pre></div>
         </ul>
       </div>
     </details>
+  </section>
+
+  <!-- ============ CODEOWNERS ============ -->
+  <section id="codeowners" class="mb-5">
+    <h2 class="mb-1">🛡️ CODEOWNERS — Structure &amp; Use</h2>
+    <p class="text-body-secondary">The review-routing primitive behind "the right experts supervise high-impact changes" — it appears across Domains 1 and 6. Researched from the <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener">official CODEOWNERS documentation</a>.</p>
+
+    <div class="row g-3 mb-3">
+      <div class="col-lg-6">
+        <div class="card h-100"><div class="card-body small">
+          <h5 class="card-title">📁 File location &amp; resolution</h5>
+          <ul class="mb-2">
+            <li>GitHub looks for the file in this order and uses the <strong>first one found</strong>: <code>.github/CODEOWNERS</code> → repository root <code>CODEOWNERS</code> → <code>docs/CODEOWNERS</code></li>
+            <li>The file is <strong>per-branch</strong> — each branch can define different owners (e.g., one team on <code>main</code>, another on <code>gh-pages</code>)</li>
+            <li>For pull requests, the CODEOWNERS version on the <strong>base branch</strong> decides who gets the review request</li>
+            <li>Maximum size <strong>3&nbsp;MB</strong> — an oversized file is <em>not loaded at all</em>: no owner info shown, no reviews requested. Use wildcards to stay small</li>
+          </ul>
+          <h5 class="card-title">👤 Who can be an owner</h5>
+          <ul class="mb-0">
+            <li>Users or teams (<code>@user</code>, <code>@org/team-name</code>) with <strong>explicit write access</strong> to the repository; teams must also be <strong>visible</strong></li>
+            <li>Users may alternatively be referenced by email (not available for enterprise managed user accounts)</li>
+            <li>An owner that doesn't exist or lacks access is <strong>silently not assigned</strong> — a classic misconfiguration</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card h-100"><div class="card-body small">
+          <h5 class="card-title">✍️ Syntax rules</h5>
+          <ul class="mb-2">
+            <li>One pattern per line followed by one or more owners; patterns follow <strong>gitignore-style</strong> rules and are <strong>case-sensitive</strong></li>
+            <li><strong>The last matching pattern wins</strong> — order your file general → specific (a PR touching only <code>*.js</code> pings the JS owner, <em>not</em> the global <code>*</code> owners)</li>
+            <li>Inline comments allowed after the owner list: <code>*.js @owner  # note</code></li>
+            <li>A pattern with an <strong>empty owner list</strong> creates an "unowned" exception inside an owned tree</li>
+            <li>A line with invalid syntax is <strong>skipped</strong> (errors surface in the web UI and REST API — the rest of the file still works)</li>
+          </ul>
+          <h5 class="card-title">🚫 NOT supported (vs. gitignore)</h5>
+          <ul class="mb-0">
+            <li>Negation patterns with <code>!</code></li>
+            <li>Character ranges with <code>[&nbsp;]</code></li>
+            <li>Escaping a leading <code>#</code> with <code>\</code> to make it a pattern</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <span class="file-label">.github/CODEOWNERS &nbsp;(annotated — order matters, read bottom-up when resolving)</span>
+    <div class="code-wrap"><button class="btn btn-sm btn-outline-secondary code-copy">copy</button><pre><code># Default owners for everything — matched LAST only if nothing below matches
+*                      @global-owner1 @global-owner2
+
+# File-type ownership: a JS-only PR requests @js-owner, NOT the global owners
+*.js                   @js-owner            # inline comment is fine here
+*.go                   docs@example.com     # email reference works too
+*.txt                  @octo-org/octocats   # team (must be visible + write access)
+
+# Directory semantics — three different scopes:
+/build/logs/           @doctocat            # anchored: only root-level build/logs/
+docs/*                 docs@example.com     # files directly in any docs/ (not nested)
+apps/                  @octocat             # any directory named apps/, anywhere
+/docs/                 @doctocat            # anchored: the root docs/ tree
+**/logs                @octocat             # logs/ at any nesting level
+
+# Unowned exception: apps/ is owned, EXCEPT apps/github (no owner listed)
+/apps/                 @octocat
+/apps/github
+
+# Agent-era guardrail: the config that defines agent behavior is itself owned
+/.github/CODEOWNERS    @platform-team
+/.github/workflows/    @platform-team
+/.github/agents/       @platform-team</code></pre></div>
+
+    <div class="callout small">
+      <strong>Enforcement is opt-in — know this for the exam.</strong> On its own, CODEOWNERS only <em>requests</em> reviews automatically. It becomes a merge <em>gate</em> only when branch protection or a ruleset enables <strong>"Require review from Code Owners"</strong>. And when multiple owners match, <strong>an approval from any one of them satisfies the requirement</strong> — it's not "all owners must approve."
+    </div>
+
+    <div class="card"><div class="card-body small">
+      <h5 class="card-title">🤖 Why it matters for GH-600</h5>
+      <ul class="mb-0">
+        <li><strong>Review routing by path</strong> is the control-plane row you must know: CODEOWNERS ensures the right experts supervise high-impact changes (Domain 1)</li>
+        <li>Agents are treated as contributors — CODEOWNERS routes <em>agent-authored</em> PRs touching sensitive paths (<code>.github/workflows/</code>, <code>infra/</code>, <code>/security/</code>) to the owning team automatically</li>
+        <li>The official cloud-agent guardrails guidance says to <strong>protect Copilot and MCP configuration files with CODEOWNERS</strong> so an agent can't quietly rewrite its own boundaries (Domain 6)</li>
+        <li>In the risk-tiered autonomy ladder, CODEOWNERS + multiple reviews is the prescription for <em>high-risk</em> paths — one tier below environment approvals for <em>critical</em> actions</li>
+        <li>Requesting-user nuance: the developer who triggered an agent <strong>cannot approve the agent's PR themselves</strong> — pair that fact with code-owner review for defense in depth</li>
+      </ul>
+    </div></div>
   </section>
 
   <!-- ============ DIAGRAMS ============ -->
