@@ -107,6 +107,7 @@
     <li class="nav-item"><a class="nav-link toc-link" href="#notes">🧠 Deep Study Notes</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#configs">⚙️ Config Cookbook</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#codeowners">🛡️ CODEOWNERS</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#protections">🔒 Protection &amp; Rulesets</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#diagrams">🗺️ Diagrams</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#flashcards">🎴 Flashcards</a></li>
     <li class="nav-item"><a class="nav-link toc-link" href="#practice">📝 Practice</a></li>
@@ -1081,6 +1082,57 @@ apps/                  @octocat             # any directory named apps/, anywher
         <li>Requesting-user nuance: the developer who triggered an agent <strong>cannot approve the agent's PR themselves</strong> — pair that fact with code-owner review for defense in depth</li>
       </ul>
     </div></div>
+  </section>
+
+  <!-- ============ BRANCH PROTECTION & RULESETS ============ -->
+  <section id="protections" class="mb-5">
+    <h2 class="mb-1">🔒 Branch Protection &amp; Rulesets</h2>
+    <p class="text-body-secondary">The enforcement rows of the control plane — what turns "agents propose; humans and policy accept" from a slogan into system behavior. Researched from the official
+      <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches" target="_blank" rel="noopener">protected branches</a> and
+      <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets" target="_blank" rel="noopener">rulesets</a> documentation.</p>
+
+    <div class="card mb-3"><div class="card-body small">
+      <h5 class="card-title">Branch protection rules — the twelve protections</h5>
+      <p class="mb-2">Rules target specific branches, all branches, or <code>fnmatch</code> patterns (e.g. <code>*release*</code>). <strong>Only a single branch protection rule applies at a time</strong> — the key limitation rulesets were built to fix.</p>
+      <div class="table-responsive"><table class="table table-sm table-bordered mb-2">
+        <thead><tr><th>Protection</th><th>What it does + agent-relevant nuance</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Require PR reviews</strong></td><td>N approvals before merge; optionally from code owners. <em>Stale-review dismissal</em> invalidates approvals when new commits change the diff — an agent pushing a "fix" resets its own approvals. Can require the last push to be approved by someone other than its author.</td></tr>
+          <tr><td><strong>Require status checks</strong></td><td>Checks must be successful/skipped/neutral. <em>Strict mode</em> also requires the branch be up to date with base. This is how "evaluation becomes an enforceable gate." Same job name in multiple workflows → ambiguous results that can block merging.</td></tr>
+          <tr><td><strong>Require conversation resolution</strong></td><td>All PR comments resolved before merge — review feedback to an agent can't be ignored.</td></tr>
+          <tr><td><strong>Require signed commits</strong></td><td>Only signed, verified commits can be pushed. (Copilot cloud agent commits are cryptographically signed — compatible by design.)</td></tr>
+          <tr><td><strong>Require linear history</strong></td><td>No merge commits; squash or rebase only.</td></tr>
+          <tr><td><strong>Require merge queue</strong></td><td>Validates each PR against the latest target branch plus queued PRs — up-to-date guarantees without manual rebasing on busy repos.</td></tr>
+          <tr><td><strong>Require deployments to succeed</strong></td><td>Merge only after successful deploy to specified environments (e.g. staging).</td></tr>
+          <tr><td><strong>Lock branch</strong></td><td>Read-only branch; optional fork syncing.</td></tr>
+          <tr><td><strong>Restrict who can push</strong></td><td>Only named users/teams/apps may push (or create matching branches). Pushers still must satisfy the other rules.</td></tr>
+          <tr><td><strong>Allow force pushes</strong></td><td>Off by default; can scope to everyone-with-write or named actors. Doesn't override other rules.</td></tr>
+          <tr><td><strong>Allow deletions</strong></td><td>Off by default; locked branches can't be deleted regardless.</td></tr>
+          <tr><td><strong>Do not allow bypassing</strong></td><td>⚠️ By default <strong>admins (and "bypass branch protections" roles) are exempt from all of the above</strong> — this setting closes that hole. A frequent exam distractor.</td></tr>
+        </tbody>
+      </table></div>
+    </div></div>
+
+    <div class="card mb-3"><div class="card-body small">
+      <h5 class="card-title">Rulesets — the modern replacement</h5>
+      <div class="table-responsive"><table class="table table-sm table-bordered mb-2">
+        <thead><tr><th></th><th>Branch protection rules</th><th>Rulesets</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Stacking</strong></td><td>Single rule applies at a time</td><td><strong>Multiple rulesets apply together</strong> — rules aggregate and the <strong>most restrictive version wins</strong>; they also layer on top of existing protection rules</td></tr>
+          <tr><td><strong>Bypass</strong></td><td>Admins exempt by default (blunt)</td><td>Explicit <strong>bypass list</strong> per ruleset: users, roles, teams, or GitHub Apps</td></tr>
+          <tr><td><strong>Visibility</strong></td><td>Admins only</td><td><strong>Anyone with read access can view active rulesets</strong> — developers see why a push was rejected; auditors verify controls without admin</td></tr>
+          <tr><td><strong>Testing</strong></td><td>—</td><td><strong>Evaluate mode</strong> (Enterprise): dry-run a ruleset and monitor violations before activating</td></tr>
+          <tr><td><strong>Scope</strong></td><td>Per repository</td><td>Repo-level; plus <strong>org-level rulesets</strong> across many repositories (Enterprise)</td></tr>
+          <tr><td><strong>Beyond branches</strong></td><td>Branches only</td><td><strong>Tag rulesets</strong>; <strong>push rulesets</strong> (repo-wide + fork network) restricting file paths, path length, file extensions, and file sizes; <strong>metadata restrictions</strong> on commit messages and author emails</td></tr>
+          <tr><td><strong>Limits / plans</strong></td><td>Free on public repos; paid for private</td><td>GitHub Team &amp; Enterprise; up to 75 rulesets per repo and 75 per org</td></tr>
+        </tbody>
+      </table></div>
+      <p class="mb-0">Enforcement statuses: <strong>Active</strong> (enforced immediately), <strong>Evaluate</strong> (Enterprise dry-run), <strong>Disabled</strong>.</p>
+    </div></div>
+
+    <div class="callout small">
+      <strong>GH-600 angles.</strong> The cloud agent <em>respects rulesets exactly like a human developer</em> — the guardrails guidance says to verify rulesets neither block agent operations nor under-protect. Required status checks are what convert agent evaluation signals into merge gates; required reviews + CODEOWNERS supply the human judgment layer; and push rulesets can block an agent from ever committing certain paths or file types, repo-wide. When a question contrasts the two mechanisms, the discriminators are: <em>layering (most-restrictive-wins), explicit bypass lists, read-level visibility, evaluate mode, and org-level scope</em> — all ruleset-only.
+    </div>
   </section>
 
   <!-- ============ DIAGRAMS ============ -->
