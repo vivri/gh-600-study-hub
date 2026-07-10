@@ -51,9 +51,13 @@
   .code-copy:hover { opacity: 1; }
   .file-label { font-family: var(--bs-font-monospace); font-size: .78rem; background: rgba(111,66,193,.12); border-radius: .375rem .375rem 0 0; padding: .25rem .6rem; display: inline-block; margin-bottom: -1px; }
   pre.mermaid { background: transparent; border: 0; display: flex; justify-content: center; overflow-x: auto; margin: .5rem 0; }
+  .toc-nav { top: 84px; max-height: calc(100vh - 100px); overflow-y: auto; font-size: .85rem; border-left: 2px solid var(--bs-border-color); }
+  .toc-link { color: var(--bs-secondary-color); padding: .3rem .75rem; border-left: 2px solid transparent; margin-left: -2px; }
+  .toc-link:hover { color: var(--accent); }
+  .toc-link.active { color: var(--accent); font-weight: 600; border-left-color: var(--accent); }
 </style>
 </head>
-<body>
+<body data-bs-spy="scroll" data-bs-target="#tocNav" data-bs-offset="100" tabindex="0">
 
 <!-- ============ NAVBAR ============ -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm sticky-progress">
@@ -95,6 +99,22 @@
 </header>
 
 <main class="container-lg pb-5">
+<div class="row">
+<nav class="col-xl-2 d-none d-xl-block" aria-label="Table of contents">
+  <ul id="tocNav" class="nav flex-column sticky-top toc-nav">
+    <li class="nav-item"><a class="nav-link toc-link" href="#facts">📌 Exam Facts</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#skills">📋 Skills Measured</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#notes">🧠 Deep Study Notes</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#configs">⚙️ Config Cookbook</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#diagrams">🗺️ Diagrams</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#flashcards">🎴 Flashcards</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#practice">📝 Practice</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#labs">🧪 Labs &amp; Plan</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#resources">📚 Study Resources</a></li>
+    <li class="nav-item"><a class="nav-link toc-link" href="#community">🌐 Community</a></li>
+  </ul>
+</nav>
+<div class="col-xl-10">
 
   <!-- ============ EXAM FACTS ============ -->
   <section id="facts" class="mb-5">
@@ -1208,6 +1228,8 @@ stateDiagram-v2
       <a class="list-group-item list-group-item-action" href="https://learn.microsoft.com/en-us/credentials/certifications/request-accommodations" target="_blank" rel="noopener">♿ <strong>Request accommodations</strong> — extra time, assistive devices, or modified experience</a>
     </div>
   </section>
+</div>
+</div>
 </main>
 
 <footer class="py-4 bg-body-tertiary border-top">
